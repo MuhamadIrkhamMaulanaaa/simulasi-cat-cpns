@@ -2956,15 +2956,10 @@
       </button>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px; flex-wrap:wrap; gap:8px;">
-      <div style="display:flex; gap:12px; align-items:center;">
-        <button onclick="logoutUser()" style="background:none; border:none; color:#ef4444; font-size:0.8rem; font-weight:700; cursor:pointer; text-decoration:underline;" title="Keluar dan ganti akun peserta">
-          Ganti Akun / Keluar
-        </button>
-        <button onclick="lockFeaturesManually()" style="background:none; border:none; color:#d97706; font-size:0.8rem; font-weight:700; cursor:pointer; text-decoration:underline;" title="Kunci ulang paket fokus & modul">
-          Kunci Akses Kembali
-        </button>
-      </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px;">
+      <button onclick="logoutUser()" style="background:none; border:none; color:#ef4444; font-size:0.8rem; font-weight:700; cursor:pointer; text-decoration:underline;" title="Keluar dan ganti akun peserta">
+        Ganti Akun / Keluar
+      </button>
       <button class="btn btn-secondary" onclick="closeUserProfileModal()" style="font-size:0.82rem; padding:6px 14px;">
         Tutup
       </button>
@@ -4960,7 +4955,7 @@ function lockFeaturesManually() {
 }
 
 function logoutUser() {
-  if (confirm('Apakah Anda yakin ingin keluar dan mengganti akun peserta di perangkat ini? Seluruh akses terkunci juga akan direset ke status terkunci.')) {
+  if (confirm('Apakah Anda yakin ingin keluar dan mengganti akun peserta di perangkat ini?')) {
     try {
       localStorage.removeItem('cat_cpns_user_profile');
       localStorage.removeItem('cat_skb_materi_unlocked');
@@ -4972,7 +4967,7 @@ function logoutUser() {
     updateUserUI();
     updateLockBadges();
     renderPackages();
-    alert('Sesi peserta berhasil ditutup dan seluruh akses materi/paket soal telah dikunci kembali.');
+    alert('Sesi peserta berhasil ditutup.');
   }
 }
 
