@@ -16,7 +16,7 @@ function doPost(e) {
         "Waktu Pendaftaran",
         "Nama Lengkap",
         "Email Peserta",
-        "Tanggal Lahir (Nomor Ujian)",
+        "No. HP / WhatsApp (Nomor Ujian)",
         "Pilihan Formasi Jabatan"
       ]]);
       var headerRange = sheet.getRange(1, 1, 1, 5);
@@ -38,7 +38,7 @@ function doPost(e) {
       data.registeredAtFormatted || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
       data.nama || "-",
       data.email || "-",
-      data.tglLahir || data.noPeserta || "-",
+      data.noHp || data.whatsapp || data.tglLahir || data.noPeserta || "-",
       data.formasi || "-"
     ]);
 
