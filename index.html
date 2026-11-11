@@ -2956,10 +2956,15 @@
       </button>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px;">
-      <button onclick="logoutUser()" style="background:none; border:none; color:#ef4444; font-size:0.8rem; font-weight:700; cursor:pointer; text-decoration:underline;">
-        Ganti Akun / Hapus Sesi
-      </button>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; gap:12px; align-items:center;">
+        <button onclick="logoutUser()" style="background:none; border:none; color:#ef4444; font-size:0.8rem; font-weight:700; cursor:pointer; text-decoration:underline;" title="Keluar dan ganti akun peserta">
+          Ganti Akun / Keluar
+        </button>
+        <button onclick="lockFeaturesManually()" style="background:none; border:none; color:#d97706; font-size:0.8rem; font-weight:700; cursor:pointer; text-decoration:underline;" title="Kunci ulang paket fokus & modul">
+          Kunci Akses Kembali
+        </button>
+      </div>
       <button class="btn btn-secondary" onclick="closeUserProfileModal()" style="font-size:0.82rem; padding:6px 14px;">
         Tutup
       </button>
@@ -4940,12 +4945,33 @@ function closeUserProfileModal() {
   if (modal) modal.classList.add('hidden');
 }
 
+function lockFeaturesManually() {
+  try {
+    localStorage.removeItem('cat_skb_materi_unlocked');
+  } catch (e) {}
+  if (window.location.search) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  updateLockBadges();
+  renderPackages();
+  alert('Seluruh paket fokus TWK/TIU/TKP, Modul Belajar Jilid 1 & 2, serta SKB telah berhasil dikunci kembali.');
+  closeUserProfileModal();
+}
+
 function logoutUser() {
-  if (confirm('Apakah Anda yakin ingin mengganti akun peserta di perangkat ini?')) {
-    try { localStorage.removeItem('cat_cpns_user_profile'); } catch (e) {}
+  if (confirm('Apakah Anda yakin ingin keluar dan mengganti akun peserta di perangkat ini? Seluruh akses terkunci juga akan direset ke status terkunci.')) {
+    try {
+      localStorage.removeItem('cat_cpns_user_profile');
+      localStorage.removeItem('cat_skb_materi_unlocked');
+    } catch (e) {}
+    if (window.location.search) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     closeUserProfileModal();
     updateUserUI();
-    alert('Sesi peserta berhasil ditutup. Silakan daftar kembali atau gunakan profil baru.');
+    updateLockBadges();
+    renderPackages();
+    alert('Sesi peserta berhasil ditutup dan seluruh akses materi/paket soal telah dikunci kembali.');
   }
 }
 
