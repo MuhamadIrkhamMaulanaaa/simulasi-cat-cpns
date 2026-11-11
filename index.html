@@ -91,6 +91,10 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
   html, body {
     min-height: 100vh;
     display: flex;
@@ -1958,7 +1962,8 @@
   .user-strip {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-left: 4px solid var(--bkn-navy);
+    border-top: 3px solid var(--bkn-navy);
+    border-radius: 4px;
     padding: 14px 18px;
     margin-bottom: 18px;
     display: flex;
@@ -1994,11 +1999,20 @@
   .pkg-title { font-weight: 700; font-size: 1rem; }
   .pkg-footer .btn { padding: 8px 10px; }
 
-  .panel-card { border-radius: 4px; box-shadow: none; }
+  #screenHome .panel-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--bkn-navy);
+    border-radius: 4px;
+    box-shadow: none;
+  }
+  #homeTabHist {
+    min-height: 420px;
+  }
 
   /* ================= LAYAR UJIAN ================= */
   .exam-grid { grid-template-columns: 1fr 320px; gap: 16px; }
-  #screenExam .panel-card { padding: 0; overflow: hidden; }
+  #screenExam .panel-card { padding: 0; overflow: hidden; border-radius: 4px; box-shadow: none; }
   .q-topbar {
     background: var(--bg-subtle);
     border-bottom: 1px solid var(--border-color);
@@ -2313,7 +2327,7 @@
     <!-- TAB 2: CHEATSHEET -->
     <div id="homeTabCheat" class="hidden">
       <!-- MODUL PDF RESMI SECTION -->
-      <div class="panel-card" style="margin-bottom:18px; border-left:4px solid #0284c7;">
+      <div class="panel-card" style="margin-bottom:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
             <span class="badge" style="background:#0284c7; color:#fff; font-weight:700; font-size:0.75rem; padding:3px 10px; border-radius:12px;">MODUL RESMI CPNS 2027</span>
@@ -2616,7 +2630,7 @@
 <!-- FLOATING ROBOT DONASI (RAMAH & BULET DI POJOK KANAN BAWAH) -->
 <div id="floatingRobotDonation" class="floating-robot-wrap" onclick="openDonationModal()" title="Bantu kembangkan materi & bank soal seikhlasnya">
   <div class="robot-speech-bubble">
-    Bantu saya untuk mengembangkan materi dan bank soal dll, bebas berapapun asal ikhlas! ✨
+    Bantu saya mengembangkan materi &amp; bank soal seikhlasnya! (Donasi kode unik 27) ✨
   </div>
   <button class="robot-btn" aria-label="Buka Donasi &amp; Dukungan Robot">
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2692,19 +2706,37 @@
       </div>
     </div>
 
-    <!-- SEKSI LAYANAN WA & LAPORAN SOAL -->
-    <div style="background:linear-gradient(to right, #eff6ff, #f0f9ff); border:1px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:16px;">
-      <div style="font-weight:700; font-size:0.86rem; color:#0369a1; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-        Layanan WhatsApp Pengembang
+    <!-- PETUNJUK KODE UNIK 27 TRANSFER DONASI -->
+    <div style="background:#fffbeb; border:1.5px dashed #f59e0b; border-radius:12px; padding:14px; margin-bottom:14px; text-align:left;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:1.1rem;">💡</span>
+        <span style="font-weight:800; font-size:0.88rem; color:#92400e;">PETUNJUK DONASI + KODE UNIK (AKHIRI ANGKA 27)</span>
       </div>
-      <p style="font-size:0.8rem; color:#1e40af; margin:0 0 10px 0; line-height:1.45;">
-        Jika ingin bertanya seputar simulasi, konfirmasi dukungan, atau melaporkan kendala teknis &amp; kunci jawaban, hubungi WhatsApp:
+      <p style="font-size:0.82rem; color:#78350f; line-height:1.5; margin:0 0 8px 0;">
+        Mohon sertakan <strong>kode unik angka 27 di 2 digit paling belakang nominal transfer</strong> Anda agar donasi otomatis mudah dikenali &amp; diverifikasi oleh admin.
+      </p>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+        <span style="font-size:0.75rem; color:#92400e; font-weight:700;">Contoh:</span>
+        <span style="background:#ffffff; border:1px solid #fde68a; padding:2px 8px; border-radius:6px; font-size:0.78rem; font-family:var(--font-mono); font-weight:700; color:#b45309;">Rp 5.027</span>
+        <span style="background:#ffffff; border:1px solid #fde68a; padding:2px 8px; border-radius:6px; font-size:0.78rem; font-family:var(--font-mono); font-weight:700; color:#b45309;">Rp 10.027</span>
+        <span style="background:#ffffff; border:1px solid #fde68a; padding:2px 8px; border-radius:6px; font-size:0.78rem; font-family:var(--font-mono); font-weight:700; color:#b45309;">Rp 20.027</span>
+        <span style="background:#ffffff; border:1px solid #fde68a; padding:2px 8px; border-radius:6px; font-size:0.78rem; font-family:var(--font-mono); font-weight:700; color:#b45309;">Rp 50.027</span>
+      </div>
+    </div>
+
+    <!-- SEKSI KONFIRMASI WA DONASI RESMI -->
+    <div style="background:linear-gradient(to right, #f0fdf4, #ecfdf5); border:1px solid #bbf7d0; border-radius:10px; padding:14px; margin-bottom:16px;">
+      <div style="font-weight:700; font-size:0.86rem; color:#15803d; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+        Konfirmasi Donasi via WhatsApp
+      </div>
+      <p style="font-size:0.8rem; color:#166534; margin:0 0 10px 0; line-height:1.45;">
+        Setelah melakukan transfer dengan kode unik 27, silakan kirim bukti ke WhatsApp Admin:
       </p>
       <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px;">
         <span style="font-size:0.92rem; font-weight:700; color:#0f172a; font-family:var(--font-mono);">0877-8480-0668</span>
-        <a href="https://wa.me/6287784800668?text=Halo%20Admin%20Simulasi%20CAT%20CPNS%202027,%20saya%20ingin%20laporan/diskusi%20soal" target="_blank" rel="noopener noreferrer" style="background:#0284c7; color:#fff; font-weight:700; font-size:0.78rem; padding:6px 14px; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
-          Kirim Pesan WhatsApp
+        <a href="https://wa.me/6287784800668?text=Halo%20Admin,%20saya%20sudah%20transfer%20donasi%20dengan%20kode%20unik%2027.%20Berikut%20bukti%20transfernya%20ya" target="_blank" rel="noopener noreferrer" style="background:#16a34a; color:#fff; font-weight:700; font-size:0.78rem; padding:7px 16px; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+          Konfirmasi Donasi (+27) &rarr;
         </a>
       </div>
     </div>
@@ -2901,12 +2933,10 @@
     </div>
 
     <!-- TOMBOL AKSI PROFIL -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-      <button class="btn btn-primary" onclick="printParticipantCard()" style="background:#0284c7; border:none; padding:9px; font-size:0.84rem; font-weight:700; justify-content:center;">
-        Cetak / Simpan PDF
-      </button>
-      <button class="btn btn-outline" onclick="sendWaConfirmation()" style="border-color:#16a34a; color:#16a34a; padding:9px; font-size:0.84rem; font-weight:700; justify-content:center;">
-        Konfirmasi ke Admin WA
+    <div style="margin-bottom:10px;">
+      <button class="btn btn-primary" onclick="printParticipantCard()" style="width:100%; background:#0284c7; border:none; padding:10px; font-size:0.88rem; font-weight:700; justify-content:center; display:inline-flex; align-items:center; gap:8px; border-radius:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Cetak / Simpan Kartu Peserta (PDF)
       </button>
     </div>
 
