@@ -512,11 +512,7 @@
     gap: 20px;
     align-items: start;
   }
-  @media (max-width: 980px) {
-    .exam-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  /* 980px collapse removed - Keep Nav on the Right */
 
   .panel-card {
     background: var(--bg-surface);
@@ -2026,11 +2022,23 @@
   }
 
   /* Grid Layout: Proporsi Layar Pas, Tetap Stabil & Tidak Berubah Ukuran */
+  /* GRID SOAL & NAVIGASI: NAVIGASI SELALU TETAP DI KANAN (TIDAK BOLEH PINDAH KE BAWAH) */
+  #screenExam .exam-grid,
   .exam-grid {
     display: grid !important;
-    grid-template-columns: 1fr 315px !important;
+    grid-template-columns: minmax(0, 1fr) 310px !important;
     gap: 16px !important;
     align-items: start !important;
+  }
+  #screenExam #examSidebarCol {
+    width: 310px !important;
+    min-width: 310px !important;
+    max-width: 310px !important;
+    position: sticky !important;
+    top: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
   }
 
   /* PANEL SOAL KIRI (KONSISTENSI FONT & PROPORSI ELEGAN) */
@@ -2306,14 +2314,7 @@
     background: #b91c1c !important;
   }
 
-  @media (max-width: 980px) {
-    .exam-grid {
-      grid-template-columns: 1fr !important;
-    }
-    #screenExam #examSidebarCol {
-      position: static !important;
-    }
-  }
+  /* 980px collapse removed */
 
 </style>
 </head>
@@ -2618,7 +2619,6 @@
         </div>
 
         <!-- Kotak Peserta dipindahkan ke Pojok Kanan Atas Header -->
-        </div>
 
         <!-- 3. LEMBAR JAWABAN (NAVIGASI SOAL 110 NOMOR SELALU ADA) -->
         <div class="panel-card nav-soal-card" id="navSoalCard">
