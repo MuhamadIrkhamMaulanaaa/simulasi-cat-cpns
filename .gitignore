@@ -1,0 +1,11 @@
+# Personal documents & heavy PDFs
+Dokumen/
+*.pdf
+
+# Deployment bundles & temp
+DEPLOY_CLOUDFLARE/
+DEPLOY_CLOUDFLARE_CAT_CPNS_2027.zip
+*.zip
+.DS_Store
+Thumbs.db
+*.log
