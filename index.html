@@ -2010,153 +2010,65 @@
     min-height: 420px;
   }
 
-  /* ================= LAYAR UJIAN ================= */
+  /* ================= LAYAR UJIAN: ZERO SCROLL 1-SCREEN ROCK SOLID ================= */
+  body.in-exam {
+    overflow: hidden !important;
+    height: 100vh !important;
+  }
+  body.in-exam .main-container {
+    max-width: 1440px !important;
+    margin: 6px auto 0 !important;
+    padding: 0 12px 6px !important;
+    height: calc(100vh - 58px) !important;
+    overflow: hidden !important;
+  }
+  body.in-exam #screenExam {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  /* Grid Soal & Sidebar Pas Selayar (100% Height, 0 Window Scroll) */
   .exam-grid {
-    grid-template-columns: 1fr 320px;
-    gap: 16px;
-    transition: grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: grid !important;
+    grid-template-columns: 1fr 310px !important;
+    gap: 10px !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
   }
 
-  /* KETIKA DIKECILKAN: Halaman Soal otomatis Mengembang Penuh Mengikuti Layar */
-  .exam-grid.sidebar-collapsed {
-    grid-template-columns: 1fr !important;
-  }
-
-  .exam-grid.sidebar-collapsed #navSoalCard {
-    display: none !important;
-  }
-
-  /* Floating PiP Layar Kamera saat Navigasi Soal Dikecilkan */
-  .exam-grid.sidebar-collapsed #proctorCard {
-    position: fixed !important;
-    bottom: 24px !important;
-    right: 24px !important;
-    width: 220px !important;
-    margin: 0 !important;
-    z-index: 990 !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px #0284c7 !important;
-    background: var(--bg-surface) !important;
-    border-radius: 8px !important;
-    animation: proctorSlideIn 0.25s ease-out;
-  }
-
-  .exam-grid.sidebar-collapsed #proctorCard .proctor-header {
-    margin-bottom: 6px;
-  }
-  .exam-grid.sidebar-collapsed #proctorCard .proctor-title {
-    font-size: 0.72rem;
-  }
-  .exam-grid.sidebar-collapsed #proctorCard .proctor-badge {
-    font-size: 0.62rem;
-    padding: 1px 5px;
-  }
-  .exam-grid.sidebar-collapsed #proctorCard .proctor-video-wrap {
-    max-height: 125px;
-  }
-  .exam-grid.sidebar-collapsed .proctor-pip-nav-btn {
-    display: block !important;
-  }
-
-  @keyframes proctorSlideIn {
-    from { opacity: 0; transform: translateY(12px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* Tombol Toggle Navigasi di Topbar */
-  .btn-toggle-nav-top {
-    font-size: 0.8rem !important;
-    padding: 6px 12px !important;
-    font-weight: 700 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    transition: all 0.15s ease !important;
-    border: 1px solid var(--border-color) !important;
-    background: var(--bg-surface) !important;
-    color: var(--text-primary) !important;
-  }
-  .btn-toggle-nav-top:hover {
-    background: var(--bg-subtle) !important;
-    border-color: #0284c7 !important;
-  }
-  .btn-toggle-nav-top.active-nav-toggled {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-    border-color: #0284c7 !important;
-    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
-  }
-
-  /* Tombol Kecilkan di Panel Navigasi */
-  .btn-toggle-nav-card {
-    background: transparent;
+  /* PANEL SOAL KIRI (FLEX KONTEN) */
+  #screenExam #qMainPanel {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    padding: 3px 8px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.15s ease;
-  }
-  .btn-toggle-nav-card:hover {
-    background: var(--bg-subtle);
-    color: #0284c7;
-    border-color: #0284c7;
+    box-shadow: none;
+    padding: 0 !important;
   }
 
-  /* Header User Card Pill */
-  .hdr-user-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 10px 4px 6px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .hdr-user-btn:hover {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-  .hdr-user-info-text {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    line-height: 1.15;
-  }
-  .hdr-user-name {
-    font-weight: 700;
-    font-size: 0.82rem;
-    color: #ffffff;
-  }
-  .hdr-user-card-tag {
-    font-size: 0.62rem;
-    color: #93c5fd;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
-  #screenExam .panel-card { padding: 0; overflow: hidden; border-radius: 4px; box-shadow: none; }
   .q-topbar {
+    flex-shrink: 0 !important;
     background: var(--bg-subtle);
     border-bottom: 1px solid var(--border-color);
-    padding: 12px 20px;
+    padding: 8px 16px !important;
     margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .q-counter {
     font-family: var(--font-sans);
-    font-size: 1.05rem;
+    font-size: 0.98rem !important;
     font-weight: 700;
     color: var(--text-primary);
-    padding-right: 12px;
+    padding-right: 10px;
     border-right: 1px solid var(--border-color);
   }
   .q-tag {
@@ -2165,173 +2077,265 @@
     border: none;
     border-radius: 2px;
     font-family: var(--font-sans);
+    font-size: 0.72rem;
+    padding: 2px 6px;
   }
   [data-theme="dark"] .q-tag { background: var(--primary); }
-  .q-subtopic { font-weight: 500; color: var(--text-muted); font-size: 0.84rem; }
-  .q-stem { padding: 22px 24px 6px; font-size: 1rem; line-height: 1.7; margin: 0; }
-  .options-group { padding: 6px 24px 8px; gap: 0; }
-  #qExplainContainer { margin: 16px 24px 0; }
+  .q-subtopic { font-weight: 500; color: var(--text-muted); font-size: 0.8rem; }
 
-  /* Opsi jawaban gaya radio CAT */
+  /* Area Scroll Internal Soal (Halaman tidak bergerak sama sekali saat ganti soal) */
+  .q-content-scroll {
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    padding: 10px 18px !important;
+  }
+
+  .q-stem {
+    padding: 4px 0 10px !important;
+    font-size: 0.94rem !important;
+    line-height: 1.55 !important;
+    margin: 0;
+  }
+  .options-group {
+    padding: 2px 0 6px !important;
+    gap: 0;
+  }
+  #qExplainContainer { margin: 12px 0 4px; }
+
+  /* Opsi Jawaban Radio CAT */
   .option-btn {
     border: none;
     border-bottom: 1px solid var(--border-color);
     border-radius: 0;
-    padding: 12px 10px;
     background: transparent;
-    align-items: center;
+    padding: 8px 12px !important;
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px !important;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.12s ease;
   }
   .option-btn:last-child { border-bottom: none; }
-  .option-btn:hover { background: var(--bg-subtle); border-color: var(--border-color); }
-  .option-btn.selected { background: var(--primary-light); border-color: var(--border-color); }
-  .opt-letter {
-    width: 30px; height: 30px;
-    border: 2px solid #9aa6b2;
-    font-family: var(--font-sans);
-    color: var(--text-secondary);
+  .option-btn:hover { background: var(--bg-subtle); }
+  .option-btn.selected {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
   }
-  .option-btn.selected .opt-letter { background: var(--primary); border-color: var(--primary); }
-  .option-btn.correct { background: #e9f6ee; }
-  .option-btn.wrong { background: #fdecec; }
-  [data-theme="dark"] .option-btn.correct { background: #12301e; }
-  [data-theme="dark"] .option-btn.wrong { background: #3a1616; }
+  [data-theme="dark"] .option-btn.selected {
+    background: #082f49;
+    color: #7dd3fc;
+  }
+  .opt-indicator {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50%;
+    border: 2px solid #94a3b8;
+    background: #ffffff;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem !important;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.12s;
+  }
+  [data-theme="dark"] .opt-indicator { background: var(--bg-surface); }
+  .option-btn.selected .opt-indicator {
+    border-color: #0284c7;
+    background: #0284c7;
+    color: #ffffff;
+  }
+  .option-btn.correct { background: #dcfce7 !important; color: #15803d !important; }
+  .option-btn.correct .opt-indicator { border-color: #16a34a !important; background: #16a34a !important; color: #ffffff !important; }
+  .option-btn.wrong { background: #fee2e2 !important; color: #b91c1c !important; }
+  .option-btn.wrong .opt-indicator { border-color: #dc2626 !important; background: #dc2626 !important; color: #ffffff !important; }
+  .opt-text { flex: 1; font-size: 0.90rem !important; line-height: 1.5; }
 
-  /* Toolbar bawah */
+  /* Toolbar Bawah: Terkunci Permanen di Bawah Card (Tidak Pernah Berpindah Posisi) */
   .q-toolbar {
+    flex-shrink: 0 !important;
     background: var(--bg-subtle);
     border-top: 1px solid var(--border-color);
-    padding: 12px 20px;
-    margin-top: 18px;
+    padding: 8px 16px !important;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
   }
-  .btn-nav {
-    background: var(--primary);
-    color: #ffffff;
-    border-color: var(--primary);
-    min-width: 150px;
-  }
-  .btn-nav:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
   .btn-doubt-toggle {
     background: var(--cat-yellow);
-    color: #3a2c00;
-    border-color: #ddb020;
-    min-width: 120px;
+    color: #000000;
+    font-weight: 700;
+    border: 1px solid #d99b00;
+    padding: 6px 16px !important;
+    border-radius: 3px;
+    font-size: 0.84rem !important;
   }
-  .btn-doubt-toggle:hover { background: #e9b81f; }
+  .btn-doubt-toggle:hover { background: #e0a800; }
   .btn-doubt-toggle.active {
-    background: #e09b00;
-    border-color: #c78900;
-    color: #ffffff;
+    background: #b45309 !important;
+    color: #ffffff !important;
+    border-color: #78350f !important;
   }
-  .btn-doubt-toggle.active::before { content: "\2713  "; white-space: pre; }
 
-  /* Kotak info peserta + sisa waktu */
-  .cat-side-box {
+  /* SIDEBAR KANAN: TERKUNCI PAS SELAYAR */
+  #screenExam #examSidebarCol {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    gap: 8px !important;
+  }
+
+  /* 1. Kamera Pengawas Compact */
+  #screenExam .proctor-box {
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 6px 10px !important;
+    border-radius: 4px !important;
+    background: var(--bg-surface);
+  }
+  #screenExam .proctor-box .proctor-header { margin-bottom: 4px !important; }
+  #screenExam .proctor-title { font-size: 0.72rem !important; }
+  #screenExam .proctor-badge { font-size: 0.62rem !important; padding: 1px 5px !important; }
+  #screenExam .proctor-video-wrap { aspect-ratio: 16 / 9 !important; max-height: 90px !important; }
+  #screenExam .proctor-caption { margin-top: 4px !important; font-size: 0.65rem !important; }
+
+  /* 2. Kotak Peserta: Tetap Ada & Menggantikan Tombol Header */
+  #screenExam .cat-side-box {
+    flex-shrink: 0 !important;
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    margin-bottom: 14px;
+    margin: 0 !important;
     overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s;
   }
-  .cat-side-head {
+  #screenExam .cat-side-box:hover {
+    border-color: #0284c7;
+  }
+  #screenExam .cat-side-head {
     background: var(--bkn-navy);
     color: #ffffff;
-    font-size: 0.78rem;
+    font-size: 0.72rem !important;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    padding: 8px 14px;
+    padding: 4px 10px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .cat-side-body { padding: 10px 14px; }
-  .cat-side-row {
+  #screenExam .cat-side-body { padding: 4px 10px !important; }
+  #screenExam .cat-side-row {
     display: grid;
-    grid-template-columns: 92px 1fr;
-    gap: 8px;
-    font-size: 0.84rem;
-    padding: 3px 0;
+    grid-template-columns: 78px 1fr !important;
+    gap: 6px;
+    font-size: 0.76rem !important;
+    padding: 1px 0 !important;
+    line-height: 1.25;
   }
-  .cat-side-row span { color: var(--text-muted); }
-  .cat-side-row strong { color: var(--text-primary); font-weight: 600; word-break: break-word; }
-  .cat-side-timer {
-    border-top: 1px solid var(--border-color);
-    padding: 10px 14px 12px;
-    text-align: center;
-    background: var(--bg-subtle);
-  }
-  .cat-side-timer-label {
-    display: block;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
-  }
-  .cat-side-timer-val {
-    display: block;
-    font-size: 1.7rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-primary);
-    letter-spacing: 1px;
-  }
-  .cat-side-timer-val.urgent { color: #c62828; }
+  #screenExam .cat-side-row span { color: var(--text-muted); }
+  #screenExam .cat-side-row strong { color: var(--text-primary); font-weight: 600; word-break: break-word; }
 
-  /* Navigasi soal */
-  .nav-soal-card { padding: 0 !important; }
-  .nav-soal-card .nav-panel-title {
+  /* 3. Navigasi Soal: Isi Sisa Ruang Layar & Scroll Internal */
+  #screenExam .nav-soal-card {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  #screenExam .nav-soal-card .nav-panel-title {
+    flex-shrink: 0 !important;
     background: var(--bkn-navy);
     color: #ffffff;
-    padding: 8px 14px;
+    padding: 5px 10px !important;
     margin: 0;
-    font-size: 0.78rem;
+    font-size: 0.72rem !important;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .nav-soal-card .nav-panel-title span:last-child { font-size: 0.78rem; font-weight: 600; color: #c5d3e3; text-transform: none; letter-spacing: 0; }
-  .nav-soal-card .legend-row { padding: 10px 14px; margin: 0; }
-  .nav-soal-card .grid-numbers { padding: 12px 14px; max-height: 360px; }
-  .nav-soal-card .btn-finish-sidebar { width: calc(100% - 28px); margin: 0 14px 14px; }
-
-  .legend-sq { border-radius: 2px; }
-  .legend-sq.sq-ans { background: var(--cat-green); border: 1px solid var(--cat-green); }
-  .legend-sq.sq-doubt, [data-theme="dark"] .legend-sq.sq-doubt { background: var(--cat-yellow); border: 1px solid #ddb020; }
-  .legend-sq.sq-empty { background: #ffffff; border: 1px solid #9aa6b2; }
-
-  .grid-numbers { gap: 6px; }
-  .num-tile {
+  #screenExam .nav-soal-card .legend-row {
+    flex-shrink: 0 !important;
+    padding: 4px 10px !important;
+    margin: 0;
+    font-size: 0.68rem !important;
+    gap: 6px !important;
+  }
+  #screenExam .grid-numbers {
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    padding: 6px 10px !important;
+    gap: 5px !important;
+    max-height: none !important;
+  }
+  #screenExam .num-tile {
     position: relative;
     flex-direction: column;
     gap: 0;
     line-height: 1.05;
     border-radius: 2px;
     border: 1px solid #9aa6b2;
-    font-size: 0.86rem;
+    font-size: 0.78rem !important;
+    height: 28px !important;
+    min-height: 28px !important;
   }
-  .num-tile .num-ans { font-size: 0.66rem; font-weight: 700; opacity: 0.95; }
-  .num-tile:hover { border-color: var(--primary); color: var(--primary); }
-  .num-tile.ans, [data-theme="dark"] .num-tile.ans, .num-tile.ans.curr {
+  #screenExam .num-tile .num-ans { font-size: 0.60rem !important; font-weight: 700; opacity: 0.95; }
+  #screenExam .num-tile:hover { border-color: var(--primary); color: var(--primary); }
+  #screenExam .num-tile.ans, [data-theme="dark"] .num-tile.ans, #screenExam .num-tile.ans.curr {
     background: var(--cat-green) !important;
     border-color: var(--cat-green) !important;
     color: #ffffff !important;
   }
-  .num-tile.dbt, [data-theme="dark"] .num-tile.dbt, .num-tile.dbt.curr {
+  #screenExam .num-tile.doubt, [data-theme="dark"] .num-tile.doubt, #screenExam .num-tile.doubt.curr {
     background: var(--cat-yellow) !important;
     border-color: #ddb020 !important;
-    color: #3a2c00 !important;
+    color: #000000 !important;
   }
-  .num-tile.curr, [data-theme="dark"] .num-tile.curr {
-    border: 2px solid var(--primary) !important;
-    color: var(--primary) !important;
+  #screenExam .num-tile.curr {
+    border: 2px solid var(--cat-blue) !important;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.4);
+    font-weight: 800;
   }
-  .num-tile.ans.curr, .num-tile.dbt.curr {
-    box-shadow: inset 0 0 0 2px #ffffff, 0 0 0 2px var(--primary) !important;
-  }
-
-  .btn-finish-sidebar {
-    background: #c62828;
-    border-color: #c62828;
+  #screenExam .btn-finish-sidebar {
+    flex-shrink: 0 !important;
+    background: #c92a2a;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.80rem !important;
+    padding: 7px !important;
+    margin: 5px 10px !important;
+    width: calc(100% - 20px) !important;
+    border: 1px solid #b02525;
     border-radius: 3px;
   }
-  .btn-finish-sidebar:hover { background: #a91f1f; border-color: #a91f1f; }
+  #screenExam .btn-finish-sidebar:hover { background: #a91f1f; border-color: #a91f1f; }
+
+  .legend-sq { border-radius: 2px; width: 10px; height: 10px; }
+  .legend-sq.sq-ans { background: var(--cat-green); border: 1px solid var(--cat-green); }
+  .legend-sq.sq-doubt, [data-theme="dark"] .legend-sq.sq-doubt { background: var(--cat-yellow); border: 1px solid #ddb020; }
+  .legend-sq.sq-empty { background: #ffffff; border: 1px solid #9aa6b2; }
 
   /* Robot donasi: lebih kalem */
   .robot-btn { background: var(--bkn-navy); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
@@ -2581,7 +2585,7 @@
       <span id="proctorWarningBannerText">Peringatan Pengawas: Wajah tidak terdeteksi!</span>
     </div>
     <div id="examGrid" class="exam-grid">
-      <!-- MAIN QUESTION PANEL -->
+      <!-- MAIN QUESTION PANEL (LOCKED HEIGHT, FIXED TOOLBAR) -->
       <div class="panel-card" id="qMainPanel">
         <div class="q-topbar">
           <div class="q-meta-left">
@@ -2590,23 +2594,21 @@
             <span class="q-subtopic" id="qSubtopicText"></span>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <button id="btnToggleExplain" class="btn btn-secondary" onclick="revealCurrentExplanation()">Lihat Pembahasan</button>
-            <button id="btnToggleNavGrid" class="btn btn-outline btn-toggle-nav-top" onclick="toggleExamSidebar()" title="Kecilkan / Sembunyikan Navigasi Soal agar lembar soal lebih lebar">
-              <span id="btnToggleNavGridIcon">◀</span>
-              <span id="btnToggleNavGridText">Kecilkan Navigasi</span>
-            </button>
+            <button id="btnToggleExplain" class="btn btn-secondary" onclick="revealCurrentExplanation()" style="font-size:0.8rem; padding:5px 12px;">Lihat Pembahasan</button>
           </div>
         </div>
 
-        <div class="q-stem" id="qStemContainer"></div>
-        <div class="options-group" id="qOptionsContainer"></div>
+        <!-- AREA KONTEN SOAL DENGAN SCROLL INTERNAL (HALAMAN TIDAK BERGERAK SAAT NEXT SOAL) -->
+        <div class="q-content-scroll" id="qContentScroll">
+          <div class="q-stem" id="qStemContainer"></div>
+          <div class="options-group" id="qOptionsContainer"></div>
+          <div id="qExplainContainer" class="explain-card hidden"></div>
+        </div>
 
-        <div id="qExplainContainer" class="explain-card hidden"></div>
-
-        <!-- TOOLBAR BAWAH CAT -->
+        <!-- TOOLBAR BAWAH CAT (TERKUNCI PERMANEN DI BAWAH, POSISI KURSOR SELALU SAMA) -->
         <div class="q-toolbar">
           <div class="toolbar-left">
-            <button class="btn btn-nav" id="btnPrev" onclick="prevQuestion()">
+            <button class="btn btn-nav" id="btnPrev" onclick="prevQuestion()" style="font-size:0.84rem; padding:6px 14px;">
               &lsaquo; Soal Sebelumnya
             </button>
           </div>
@@ -2614,23 +2616,23 @@
             <button class="btn btn-doubt-toggle" id="btnDoubt" onclick="toggleDoubt()">
               Ragu-Ragu
             </button>
-            <button class="btn btn-outline" onclick="clearAnswer()">Kosongkan</button>
+            <button class="btn btn-outline" onclick="clearAnswer()" style="font-size:0.84rem; padding:6px 14px;">Kosongkan</button>
           </div>
           <div class="toolbar-right">
-            <button class="btn btn-nav" id="btnNext" onclick="nextQuestion()">
+            <button class="btn btn-nav" id="btnNext" onclick="nextQuestion()" style="font-size:0.84rem; padding:6px 16px;">
               Soal Berikutnya &rsaquo;
             </button>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT SIDEBAR: PROCTORING & LEMBAR JAWABAN -->
+      <!-- RIGHT SIDEBAR: KAMERA PENGAWAS, KOTAK PESERTA & NAVIGASI SOAL TETAP ADA -->
       <div id="examSidebarCol" class="exam-sidebar">
-        <!-- WEBCAM PROCTORING WIDGET -->
+        <!-- 1. KAMERA PENGAWAS CAT -->
         <div id="proctorCard" class="proctor-box">
           <div class="proctor-header">
             <span class="proctor-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V6z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V6z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
               Kamera Pengawas CAT
             </span>
             <span id="proctorStatusBadge" class="proctor-badge">
@@ -2644,34 +2646,39 @@
               <div class="target-reticle"></div>
             </div>
             <div id="proctorPlaceholder" class="proctor-placeholder">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6;"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-              <span>Kamera pengawas sedang diinisialisasi...</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6;"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+              <span>Kamera aktif...</span>
             </div>
           </div>
           <div class="proctor-caption">
-            <span>Sesi: Terverifikasi BKN-2027</span>
+            <span>Sesi: CASN 2027</span>
             <span id="proctorViolationsBadge" style="font-weight:600; color:#dc2626;">0 Pelanggaran</span>
           </div>
-          <button onclick="toggleExamSidebar()" style="display:none; margin-top:8px; width:100%; font-size:0.72rem; font-weight:700; padding:6px; background:#0284c7; color:#fff; border:none; border-radius:4px; cursor:pointer;" class="proctor-pip-nav-btn">
-            Tampilkan Navigasi Soal (110) 📋
-          </button>
         </div>
 
-        <!-- LEMBAR JAWABAN (NAVIGASI SOAL) -->
+        <!-- 2. KOTAK PESERTA: TETAP ADA MENGGANTIKAN KARTU PESERTA POJOK ATAS -->
+        <div class="cat-side-box" id="examPesertaCard" onclick="openUserProfileModal()" title="Klik untuk membuka Kartu Peserta resmi">
+          <div class="cat-side-head">
+            <span>Peserta</span>
+            <span style="font-size:0.65rem; color:#93c5fd; font-weight:700; text-transform:none;">Kartu Peserta &rsaquo;</span>
+          </div>
+          <div class="cat-side-body">
+            <div class="cat-side-row"><span>No. Peserta</span><strong id="examSideNo">-</strong></div>
+            <div class="cat-side-row"><span>Nama</span><strong id="examSideNama">-</strong></div>
+            <div class="cat-side-row"><span>Paket</span><strong id="examSidePaket">-</strong></div>
+          </div>
+        </div>
+
+        <!-- 3. LEMBAR JAWABAN (NAVIGASI SOAL 110 NOMOR SELALU ADA) -->
         <div class="panel-card nav-soal-card" id="navSoalCard">
-          <div class="nav-panel-title" style="display:flex; justify-content:space-between; align-items:center;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span>Navigasi Soal</span>
-              <span id="gridProgressText" style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">0 / 110 Selesai</span>
-            </div>
-            <button class="btn-toggle-nav-card" onclick="toggleExamSidebar()" title="Kecilkan Navigasi Soal agar soal lebih lebar">
-              ◀ Kecilkan
-            </button>
+          <div class="nav-panel-title">
+            <span>Navigasi Soal</span>
+            <span id="gridProgressText" style="font-size:0.72rem; font-weight:600; color:#c5d3e3;">0 / 110 Selesai</span>
           </div>
 
           <div class="legend-row">
             <div class="legend-item"><span class="legend-sq sq-ans"></span> Dijawab (<span id="lgAnsCount">0</span>)</div>
-            <div class="legend-item"><span class="legend-sq sq-doubt"></span> Ragu-ragu (<span id="lgDbtCount">0</span>)</div>
+            <div class="legend-item"><span class="legend-sq sq-doubt"></span> Ragu (<span id="lgDbtCount">0</span>)</div>
             <div class="legend-item"><span class="legend-sq sq-empty"></span> Belum (<span id="lgEmpCount">110</span>)</div>
           </div>
 
@@ -4310,8 +4317,14 @@ function showScreen(name) {
   const inExam = (name === 'exam');
   const isSimulasi = inExam && (state.mode === 'cat' || state.mode === 'study');
 
+  document.body.classList.toggle('in-exam', inExam);
+
   document.getElementById('catHeaderStats').classList.toggle('hidden', !inExam);
   document.getElementById('examTimerWrapper').classList.toggle('hidden', !inExam);
+
+  // Di layar ujian: Kotak PESERTA sudah ada di sidebar, sehingga tombol kartu peserta di pojok header disembunyikan
+  const userWidget = document.getElementById('btnHdrUserWidget');
+  if (userWidget) userWidget.classList.toggle('hidden', inExam);
 
   // Saat simulasi/ujian aktif: hilangkan tombol Selesai Ujian, Menu Paket, dan Tema di header sehingga CUMA ADA TIMER
   const btnFinish = document.getElementById('btnHdrFinish');
@@ -4513,6 +4526,8 @@ function updateTimerUI() {
 
 function renderQuestion() {
   const q = state.questions[state.idx];
+  const contentScroll = document.getElementById('qContentScroll');
+  if (contentScroll) contentScroll.scrollTop = 0;
   document.getElementById('qCategoryBadge').textContent = q.group + (q.group === 'SKB' ? ' • ' + q.category.replace('SKB_','') : '');
   document.getElementById('qSubtopicText').textContent = q.subtopic;
   document.getElementById('qCounterText').textContent = `Soal Nomor ${state.idx + 1}`;
