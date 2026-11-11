@@ -2011,7 +2011,139 @@
   }
 
   /* ================= LAYAR UJIAN ================= */
-  .exam-grid { grid-template-columns: 1fr 320px; gap: 16px; }
+  .exam-grid {
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    transition: grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* KETIKA DIKECILKAN: Halaman Soal otomatis Mengembang Penuh Mengikuti Layar */
+  .exam-grid.sidebar-collapsed {
+    grid-template-columns: 1fr !important;
+  }
+
+  .exam-grid.sidebar-collapsed #navSoalCard {
+    display: none !important;
+  }
+
+  /* Floating PiP Layar Kamera saat Navigasi Soal Dikecilkan */
+  .exam-grid.sidebar-collapsed #proctorCard {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    width: 220px !important;
+    margin: 0 !important;
+    z-index: 990 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px #0284c7 !important;
+    background: var(--bg-surface) !important;
+    border-radius: 8px !important;
+    animation: proctorSlideIn 0.25s ease-out;
+  }
+
+  .exam-grid.sidebar-collapsed #proctorCard .proctor-header {
+    margin-bottom: 6px;
+  }
+  .exam-grid.sidebar-collapsed #proctorCard .proctor-title {
+    font-size: 0.72rem;
+  }
+  .exam-grid.sidebar-collapsed #proctorCard .proctor-badge {
+    font-size: 0.62rem;
+    padding: 1px 5px;
+  }
+  .exam-grid.sidebar-collapsed #proctorCard .proctor-video-wrap {
+    max-height: 125px;
+  }
+  .exam-grid.sidebar-collapsed .proctor-pip-nav-btn {
+    display: block !important;
+  }
+
+  @keyframes proctorSlideIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Tombol Toggle Navigasi di Topbar */
+  .btn-toggle-nav-top {
+    font-size: 0.8rem !important;
+    padding: 6px 12px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    border: 1px solid var(--border-color) !important;
+    background: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+  }
+  .btn-toggle-nav-top:hover {
+    background: var(--bg-subtle) !important;
+    border-color: #0284c7 !important;
+  }
+  .btn-toggle-nav-top.active-nav-toggled {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    border-color: #0284c7 !important;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
+  }
+
+  /* Tombol Kecilkan di Panel Navigasi */
+  .btn-toggle-nav-card {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    padding: 3px 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+  }
+  .btn-toggle-nav-card:hover {
+    background: var(--bg-subtle);
+    color: #0284c7;
+    border-color: #0284c7;
+  }
+
+  /* Header User Card Pill */
+  .hdr-user-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .hdr-user-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .hdr-user-info-text {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    line-height: 1.15;
+  }
+  .hdr-user-name {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #ffffff;
+  }
+  .hdr-user-card-tag {
+    font-size: 0.62rem;
+    color: #93c5fd;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
   #screenExam .panel-card { padding: 0; overflow: hidden; border-radius: 4px; box-shadow: none; }
   .q-topbar {
     background: var(--bg-subtle);
@@ -2448,17 +2580,21 @@
       </svg>
       <span id="proctorWarningBannerText">Peringatan Pengawas: Wajah tidak terdeteksi!</span>
     </div>
-    <div class="exam-grid">
+    <div id="examGrid" class="exam-grid">
       <!-- MAIN QUESTION PANEL -->
-      <div class="panel-card">
+      <div class="panel-card" id="qMainPanel">
         <div class="q-topbar">
           <div class="q-meta-left">
             <span class="q-counter" id="qCounterText">Soal Nomor 1</span>
             <span class="q-tag" id="qCategoryBadge">TWK</span>
             <span class="q-subtopic" id="qSubtopicText"></span>
           </div>
-          <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; align-items:center; gap:8px;">
             <button id="btnToggleExplain" class="btn btn-secondary" onclick="revealCurrentExplanation()">Lihat Pembahasan</button>
+            <button id="btnToggleNavGrid" class="btn btn-outline btn-toggle-nav-top" onclick="toggleExamSidebar()" title="Kecilkan / Sembunyikan Navigasi Soal agar lembar soal lebih lebar">
+              <span id="btnToggleNavGridIcon">◀</span>
+              <span id="btnToggleNavGridText">Kecilkan Navigasi</span>
+            </button>
           </div>
         </div>
 
@@ -2489,7 +2625,7 @@
       </div>
 
       <!-- RIGHT SIDEBAR: PROCTORING & LEMBAR JAWABAN -->
-      <div>
+      <div id="examSidebarCol" class="exam-sidebar">
         <!-- WEBCAM PROCTORING WIDGET -->
         <div id="proctorCard" class="proctor-box">
           <div class="proctor-header">
@@ -2516,27 +2652,21 @@
             <span>Sesi: Terverifikasi BKN-2027</span>
             <span id="proctorViolationsBadge" style="font-weight:600; color:#dc2626;">0 Pelanggaran</span>
           </div>
+          <button onclick="toggleExamSidebar()" style="display:none; margin-top:8px; width:100%; font-size:0.72rem; font-weight:700; padding:6px; background:#0284c7; color:#fff; border:none; border-radius:4px; cursor:pointer;" class="proctor-pip-nav-btn">
+            Tampilkan Navigasi Soal (110) 📋
+          </button>
         </div>
 
-        <!-- INFO PESERTA & SISA WAKTU (GAYA CAT BKN) -->
-        <div class="cat-side-box">
-          <div class="cat-side-head">Peserta</div>
-          <div class="cat-side-body">
-            <div class="cat-side-row"><span>No. Peserta</span><strong id="examSideNo">-</strong></div>
-            <div class="cat-side-row"><span>Nama</span><strong id="examSideNama">-</strong></div>
-            <div class="cat-side-row"><span>Paket</span><strong id="examSidePaket">-</strong></div>
-          </div>
-          <div class="cat-side-timer">
-            <span class="cat-side-timer-label" id="sideTimerLabel">Sisa Waktu</span>
-            <span class="cat-side-timer-val" id="sideTimerText">00:00:00</span>
-          </div>
-        </div>
-
-        <!-- LEMBAR JAWABAN -->
-        <div class="panel-card nav-soal-card">
-          <div class="nav-panel-title">
-            <span>Navigasi Soal</span>
-            <span id="gridProgressText">0 / 110 Selesai</span>
+        <!-- LEMBAR JAWABAN (NAVIGASI SOAL) -->
+        <div class="panel-card nav-soal-card" id="navSoalCard">
+          <div class="nav-panel-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>Navigasi Soal</span>
+              <span id="gridProgressText" style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">0 / 110 Selesai</span>
+            </div>
+            <button class="btn-toggle-nav-card" onclick="toggleExamSidebar()" title="Kecilkan Navigasi Soal agar soal lebih lebar">
+              ◀ Kecilkan
+            </button>
           </div>
 
           <div class="legend-row">
@@ -4115,6 +4245,32 @@ function renderPackages() {
   }).join('');
 }
 
+function toggleExamSidebar() {
+  const grid = document.getElementById('examGrid');
+  if (!grid) return;
+  const isCollapsed = grid.classList.toggle('sidebar-collapsed');
+  
+  const icon = document.getElementById('btnToggleNavGridIcon');
+  const text = document.getElementById('btnToggleNavGridText');
+  const btn = document.getElementById('btnToggleNavGrid');
+
+  if (isCollapsed) {
+    if (icon) icon.textContent = '▶';
+    if (text) text.textContent = 'Tampilkan Navigasi';
+    if (btn) {
+      btn.classList.add('active-nav-toggled');
+      btn.title = 'Tampilkan kembali Navigasi Soal (110 Soal)';
+    }
+  } else {
+    if (icon) icon.textContent = '◀';
+    if (text) text.textContent = 'Kecilkan Navigasi';
+    if (btn) {
+      btn.classList.remove('active-nav-toggled');
+      btn.title = 'Kecilkan / Sembunyikan Navigasi Soal agar lembar soal lebih lebar';
+    }
+  }
+}
+
 function init() {
   updateUserUI();
   renderPackages();
@@ -4253,6 +4409,18 @@ function startDirectPackage(pkgId, mode) {
   state.answers = {};
   state.doubts = {};
   state.revealed = {};
+
+  const grid = document.getElementById('examGrid');
+  if (grid) grid.classList.remove('sidebar-collapsed');
+  const icon = document.getElementById('btnToggleNavGridIcon');
+  const text = document.getElementById('btnToggleNavGridText');
+  const btn = document.getElementById('btnToggleNavGrid');
+  if (icon) icon.textContent = '◀';
+  if (text) text.textContent = 'Kecilkan Navigasi';
+  if (btn) {
+    btn.classList.remove('active-nav-toggled');
+    btn.title = 'Kecilkan / Sembunyikan Navigasi Soal agar lembar soal lebih lebar';
+  }
   state.secondsLeft = pkg.minutes * 60;
   state.timerId = null;
   state.tabSwitches = 0;
@@ -4877,9 +5045,12 @@ function updateUserUI() {
     const shortName = user.nama ? user.nama.split(' ')[0] : 'Peserta';
     if (headerWidget) {
       headerWidget.innerHTML = `
-        <button onclick="openUserProfileModal()" class="btn btn-ghost-dark hdr-user-btn" title="Lihat Kartu Peserta">
+        <button onclick="openUserProfileModal()" class="btn btn-ghost-dark hdr-user-btn" title="Identitas Peserta (Klik untuk membuka Kartu Peserta)">
           <span class="hdr-user-avatar">${initial}</span>
-          <span>${shortName}</span>
+          <span class="hdr-user-info-text">
+            <span class="hdr-user-name">${shortName}</span>
+            <span class="hdr-user-card-tag">Kartu Peserta</span>
+          </span>
         </button>
       `;
     }
