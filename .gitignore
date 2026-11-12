@@ -9,3 +9,5 @@ DEPLOY_CLOUDFLARE_CAT_CPNS_2027.zip
 .DS_Store
 Thumbs.db
 *.log
+
+.vercel
