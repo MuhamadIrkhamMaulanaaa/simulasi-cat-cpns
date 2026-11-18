@@ -1,0 +1,375 @@
+/* ==========================================================================
+   SIMULASI CAT CPNS 2027 — RESULT & HISTORY EVALUATION
+   File: css/result.css
+   ========================================================================== */
+
+/* ==========================================================================
+   RESULT CARD & HEADER
+   ========================================================================== */
+.result-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   PASSING GRADE RESULT BANNERS
+   ========================================================================== */
+.result-banner {
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.result-banner.pass {
+  background: var(--color-answered-light);
+  border: 1px solid var(--color-answered);
+  color: #14532d;
+}
+
+[data-theme="dark"] .result-banner.pass {
+  color: #86efac;
+}
+
+.result-banner.fail {
+  background: var(--color-empty-light);
+  border: 1px solid var(--color-empty);
+  color: #7f1d1d;
+}
+
+[data-theme="dark"] .result-banner.fail {
+  color: #fca5a5;
+}
+
+/* ==========================================================================
+   SCORE BREAKDOWN GRID
+   ========================================================================== */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.score-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+}
+
+.score-box-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+.score-box-val {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+}
+
+.score-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.score-badge.ok {
+  background: var(--color-answered-light);
+  color: var(--color-answered);
+}
+
+.score-badge.fail {
+  background: var(--color-empty-light);
+  color: var(--color-empty);
+}
+
+/* ==========================================================================
+   INTEGRITY AUDIT CARD
+   ========================================================================== */
+.integrity-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.integrity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.integrity-badge.clean {
+  background: var(--color-answered-light);
+  color: var(--color-answered);
+}
+
+.integrity-badge.warn {
+  background: var(--color-doubt-light);
+  color: var(--color-doubt);
+}
+
+/* ==========================================================================
+   HISTORY TABLE & ATTEMPTS LEDGER
+   ========================================================================== */
+#homeTabHist {
+  min-height: 420px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 0.88rem;
+}
+
+.history-table th,
+.history-table td {
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.history-table th {
+  background: var(--bg-subtle);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.history-table tr:hover td {
+  background: rgba(2, 132, 199, 0.03);
+}
+
+.history-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+}
+
+.history-badge.pass {
+  background: var(--color-answered-light);
+  color: var(--color-answered);
+}
+
+.history-badge.fail {
+  background: var(--color-empty-light);
+  color: var(--color-empty);
+}
+
+@media (max-width: 640px) {
+  .result-card {
+    padding: 16px;
+  }
+  .result-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .score-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   M5: PG PROGRESS BARS, BKN TIE-BREAKER & RICH HISTORY TABLE
+   ========================================================================== */
+.score-box-max {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.pg-progress-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  overflow: visible;
+  margin: 8px 0 10px;
+}
+
+.pg-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.pg-progress-fill.ok {
+  background: var(--color-answered);
+}
+
+.pg-progress-fill.fail {
+  background: var(--color-empty);
+}
+
+.pg-cutoff-marker {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 12px;
+  background: var(--bkn-navy);
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .pg-cutoff-marker {
+  background: #facc15;
+}
+
+.score-box-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.score-delta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tiebreaker-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--bkn-blue);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.tiebreaker-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.tiebreaker-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tb-step {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 145px;
+}
+
+.tb-step span {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.tb-step strong {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.tb-arrow {
+  font-weight: 800;
+  color: var(--bkn-blue);
+}
+
+.table-responsive-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.hist-subtest-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.sub-chip {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.sub-chip.ok {
+  background: var(--color-answered-light);
+  color: var(--color-answered);
+}
+
+.sub-chip.fail {
+  background: var(--color-empty-light);
+  color: var(--color-empty);
+}
+
+.sub-chip.neutral {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.hist-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-xs {
+  padding: 5px 10px;
+  font-size: 0.74rem;
+}
+
+.scope-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}

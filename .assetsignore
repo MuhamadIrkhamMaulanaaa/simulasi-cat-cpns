@@ -1,0 +1,22 @@
+# Exclude non-web, docs, archives, and test files from Cloudflare Workers Static Assets
+.git/
+.vercel/
+CPNS/
+DEPLOY_CLOUDFLARE/
+Dokumen/
+tests/
+
+*.pdf
+*.zip
+*.md
+*.log
+.DS_Store
+Thumbs.db
+
+.gitignore
+package.json
+package-lock.json
+vercel.json
+wrangler.jsonc
+KODE_GOOGLE_APPS_SCRIPT_SPREADSHEET.js
+diagram_alur_cat.png

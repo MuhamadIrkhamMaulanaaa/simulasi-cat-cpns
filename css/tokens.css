@@ -1,0 +1,99 @@
+/* ==========================================================================
+   SIMULASI CAT CPNS 2027 — DESIGN SYSTEM TOKENS
+   File: css/tokens.css
+   ========================================================================== */
+
+:root {
+  /* Typography Scale */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Surfaces & Backgrounds */
+  --bg-page: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-accent: #e2e8f0;
+
+  /* Text Colors */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  /* Borders & Focus Rings */
+  --border-color: #e2e8f0;
+  --border-focus: #0284c7;
+
+  /* BKN Identity & Primary Palette */
+  --bkn-blue: #0284c7;
+  --bkn-navy: #0f172a;
+  --bkn-navy-mid: #1e293b;
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
+  --primary-light: #eff6ff;
+  --primary-border: #bfdbfe;
+
+  /* Official CAT BKN Semantic Status Colors */
+  --color-answered: #16a34a;
+  --color-answered-light: #dcfce7;
+  --color-doubt: #d97706;
+  --color-doubt-light: #fef3c7;
+  --color-empty: #dc2626;
+  --color-empty-light: #fee2e2;
+
+  --cat-blue: #0284c7;
+  --cat-yellow: #f4c430;
+  --cat-green: #16a34a;
+  --cat-red: #dc2626;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.28);
+
+  /* Transitions */
+  --transition-fast: 0.12s ease;
+  --transition-normal: 0.2s ease;
+}
+
+[data-theme="dark"] {
+  --bg-page: #0b0f19;
+  --bg-surface: #111827;
+  --bg-subtle: #1f2937;
+  --bg-accent: #374151;
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-inverse: #0f172a;
+
+  --border-color: #1f2937;
+  --border-focus: #60a5fa;
+
+  --bkn-navy: #0b0f19;
+  --bkn-navy-mid: #131c2e;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: #172554;
+  --primary-border: #1e40af;
+
+  --color-answered: #22c55e;
+  --color-answered-light: #052e16;
+  --color-doubt: #f59e0b;
+  --color-doubt-light: #451a03;
+  --color-empty: #ef4444;
+  --color-empty-light: #450a0a;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
