@@ -14,6 +14,9 @@ const Proctor = (function () {
   let lastViolationBeepTime = 0;
   let isExitingCleanly = false;
   let securityToastTimer = null;
+  let focusShieldActive = false;
+  let timedShieldActive = false;
+  let timedShieldTimer = null;
   const faceHistoryBuffer = [];
 
   if (typeof window !== 'undefined' && 'FaceDetector' in window) {
@@ -82,17 +85,139 @@ const Proctor = (function () {
     }, 2400);
   }
 
+  function applyShieldUI(reasonMessage) {
+    const active = isExamCopyProtected() && (focusShieldActive || timedShieldActive);
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.toggle('exam-screenshot-shield', active);
+    }
+    if (typeof document !== 'undefined') {
+      const shield = document.getElementById('proctorPrivacyShield');
+      const textEl = document.getElementById('proctorPrivacyShieldText');
+      if (shield) shield.classList.toggle('hidden', !active);
+      if (active && textEl && reasonMessage) textEl.textContent = reasonMessage;
+    }
+    return active;
+  }
+
+  function clearFocusShield() {
+    focusShieldActive = false;
+    applyShieldUI();
+  }
+
+  function resetAllShields() {
+    focusShieldActive = false;
+    timedShieldActive = false;
+    if (timedShieldTimer) {
+      clearTimeout(timedShieldTimer);
+      timedShieldTimer = null;
+    }
+    applyShieldUI();
+  }
+
+  function clearClipboardForScreenshotProtection() {
+    try {
+      if (
+        typeof navigator !== 'undefined' &&
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText === 'function'
+      ) {
+        navigator.clipboard
+          .writeText('Konten soal Simulasi CAT CPNS dilindungi dan dilarang di-screenshot selama ujian.')
+          .catch(() => {});
+      }
+    } catch (_) {}
+  }
+
+  function triggerScreenshotShield(reasonMessage, options) {
+    if (!isExamCopyProtected()) return false;
+    const opts = options || {};
+    const durationMs = typeof opts.durationMs === 'number' ? opts.durationMs : 3200;
+    clearTextSelection();
+    clearClipboardForScreenshotProtection();
+    timedShieldActive = true;
+    if (timedShieldTimer) clearTimeout(timedShieldTimer);
+    applyShieldUI(
+      reasonMessage ||
+        'Terdeteksi tombol atau pintasan screenshot (PrintScreen / Snipping Tool). Layar soal dikunci sementara demi keamanan.'
+    );
+    if (opts.beep !== false) playSecurityBeep();
+    showCopyBlockedNotice('Screenshot & tangkapan layar dilarang selama ujian berlangsung.');
+    timedShieldTimer = setTimeout(() => {
+      timedShieldActive = false;
+      timedShieldTimer = null;
+      applyShieldUI();
+    }, durationMs);
+    return true;
+  }
+
+  function handleWindowBlur() {
+    if (!isExamCopyProtected()) return;
+    focusShieldActive = true;
+    clearTextSelection();
+    applyShieldUI(
+      'Jendela ujian kehilangan fokus atau overlay screenshot (seperti Win+Shift+S / Snipping Tool) sedang terbuka. Klik kembali area ujian untuk melanjutkan.'
+    );
+  }
+
+  function handleWindowFocus() {
+    focusShieldActive = false;
+    applyShieldUI();
+  }
+
+  function syncWatermark() {
+    if (typeof document === 'undefined') return;
+    const layer = document.getElementById('examWatermarkLayer');
+    if (!layer) return;
+    const locked = isExamCopyProtected();
+    layer.classList.toggle('hidden', !locked);
+    if (!locked) {
+      layer.innerHTML = '';
+      return;
+    }
+    const user =
+      typeof window !== 'undefined' && window.Storage && typeof window.Storage.getActiveUser === 'function'
+        ? window.Storage.getActiveUser()
+        : null;
+    const rawLabel =
+      user && user.noPeserta
+        ? `${user.noPeserta} • ${(user.nama || 'PESERTA').slice(0, 18)}`
+        : 'CAT BKN 2027 • DILARANG SCREENSHOT';
+    const safeLabel = String(rawLabel)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    layer.innerHTML = Array.from({ length: 12 }, () => `<span class="exam-watermark-tile">${safeLabel}</span>`).join('');
+  }
+
   function syncCopyProtection() {
     const locked = isExamCopyProtected();
     if (typeof document !== 'undefined' && document.body && document.body.classList) {
       document.body.classList.toggle('exam-copy-locked', locked);
     }
+    syncWatermark();
     if (locked) {
       clearTextSelection();
     } else {
       hideCopyBlockedNotice();
+      resetAllShields();
     }
     return locked;
+  }
+
+  function isScreenshotShortcut(e) {
+    if (!e) return false;
+    const key = String(e.key || '').toLowerCase();
+    const code = String(e.code || '').toLowerCase();
+    if (key === 'printscreen' || code === 'printscreen' || e.keyCode === 44) {
+      return 'PRINTSCREEN';
+    }
+    if (e.metaKey && e.shiftKey) {
+      return 'OS_SNIP';
+    }
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['s', 'x', '3', '4', '5', '6'].includes(key)) {
+      return 'BROWSER_CAPTURE';
+    }
+    return false;
   }
 
   function blockEvent(e) {
@@ -155,10 +280,20 @@ const Proctor = (function () {
     const hasMod = Boolean(e.ctrlKey || e.metaKey);
     const editable = isEditableTarget(e.target);
 
+    const shotKind = isScreenshotShortcut(e);
+    if (shotKind) {
+      blockEvent(e);
+      triggerScreenshotShield(
+        'Terdeteksi tombol atau pintasan screenshot. Layar soal disamarkan sementara demi keamanan bank soal.',
+        { beep: shotKind === 'PRINTSCREEN', durationMs: 3200 }
+      );
+      return;
+    }
+
     const isDevToolsShortcut =
       key === 'f12' ||
       e.keyCode === 123 ||
-      (hasMod && e.shiftKey && ['i', 'j', 'c', 'k', 's'].includes(key)) ||
+      (hasMod && e.shiftKey && ['i', 'j', 'c', 'k'].includes(key)) ||
       (e.metaKey && e.altKey && ['i', 'j', 'c', 'u'].includes(key));
 
     const isCopyExportShortcut =
@@ -167,7 +302,23 @@ const Proctor = (function () {
     if (isDevToolsShortcut || isCopyExportShortcut) {
       blockEvent(e);
       clearTextSelection();
-      showCopyBlockedNotice('Pintasan salin, cetak, dan inspeksi dinonaktifkan selama ujian.');
+      if (key === 'p') {
+        triggerScreenshotShield('Pencetakan atau simpan PDF soal dilarang selama ujian berlangsung.');
+      } else {
+        showCopyBlockedNotice('Pintasan salin, cetak, dan inspeksi dinonaktifkan selama ujian.');
+      }
+    }
+  }
+
+  function handleProtectedKeyup(e) {
+    if (!isExamCopyProtected() || !e) return;
+    const shotKind = isScreenshotShortcut(e);
+    if (shotKind === 'PRINTSCREEN' || shotKind === 'BROWSER_CAPTURE') {
+      blockEvent(e);
+      triggerScreenshotShield(
+        'Tombol PrintScreen / Capture terdeteksi. Clipboard dibersihkan dan layar dikunci sementara.',
+        { beep: true, durationMs: 3200 }
+      );
     }
   }
 
@@ -289,6 +440,10 @@ const Proctor = (function () {
       window.Exam.syncTimerOnVisibility();
     }
 
+    if (document.hidden) {
+      handleWindowBlur();
+    }
+
     if (st.mode !== 'cat') return;
     const screenExam = document.getElementById('screenExam');
     if (!screenExam || screenExam.classList.contains('hidden')) return;
@@ -298,11 +453,16 @@ const Proctor = (function () {
       updateProctorViolationsUI();
       playSecurityBeep();
       persistSnapshot();
-    } else if (st.tabSwitches > 0) {
-      const countEl = document.getElementById('tabSwitchCountText');
-      if (countEl) countEl.textContent = st.tabSwitches;
-      const modal = document.getElementById('tabSwitchModal');
-      if (modal) modal.classList.remove('hidden');
+    } else {
+      if (typeof document.hasFocus !== 'function' || document.hasFocus()) {
+        handleWindowFocus();
+      }
+      if (st.tabSwitches > 0) {
+        const countEl = document.getElementById('tabSwitchCountText');
+        if (countEl) countEl.textContent = st.tabSwitches;
+        const modal = document.getElementById('tabSwitchModal');
+        if (modal) modal.classList.remove('hidden');
+      }
     }
   }
 
@@ -732,6 +892,12 @@ const Proctor = (function () {
     document.addEventListener('dragstart', handleProtectedDragStart, true);
     document.addEventListener('selectionchange', handleProtectedSelectionChange);
     document.addEventListener('keydown', handleProtectedKeydown, true);
+    document.addEventListener('keyup', handleProtectedKeyup, true);
+  }
+
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('blur', handleWindowBlur);
+    window.addEventListener('focus', handleWindowFocus);
   }
 
   return {
@@ -749,12 +915,18 @@ const Proctor = (function () {
     stopFaceTrackingAI,
     isExamCopyProtected,
     syncCopyProtection,
+    syncWatermark,
+    clearFocusShield,
+    triggerScreenshotShield,
+    handleWindowBlur,
+    handleWindowFocus,
     handleProtectedContextMenu,
     handleProtectedCopyOrCut,
     handleProtectedSelectStart,
     handleProtectedDragStart,
     handleProtectedSelectionChange,
-    handleProtectedKeydown
+    handleProtectedKeydown,
+    handleProtectedKeyup
   };
 })();
 
@@ -772,6 +944,7 @@ if (typeof window !== 'undefined') {
   window.stopFaceTrackingAI = Proctor.stopFaceTrackingAI;
   window.isExamCopyProtected = Proctor.isExamCopyProtected;
   window.syncCopyProtection = Proctor.syncCopyProtection;
+  window.clearFocusShield = Proctor.clearFocusShield;
 }
 
 if (typeof module !== 'undefined' && module.exports) {

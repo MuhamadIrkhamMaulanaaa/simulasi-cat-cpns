@@ -194,6 +194,7 @@ body.in-exam #screenExam {
    MAIN QUESTION PANEL
    ========================================================================== */
 #screenExam #qMainPanel {
+  position: relative;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -1251,4 +1252,83 @@ body.exam-copy-locked .opt-text img {
 
 .proctor-security-toast.hidden {
   display: none;
+}
+
+/* ==========================================================================
+   ANTI-SCREENSHOT PRIVACY SHIELD & CANDIDATE WATERMARK
+   ========================================================================== */
+.exam-watermark-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 38px 18px;
+  padding: 28px 18px;
+  opacity: 0.048;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.exam-watermark-layer.hidden {
+  display: none;
+}
+
+[data-theme="dark"] .exam-watermark-layer {
+  opacity: 0.068;
+}
+
+.exam-watermark-tile {
+  transform: rotate(-24deg);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--bkn-navy);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .exam-watermark-tile {
+  color: #e2e8f0;
+}
+
+body.exam-screenshot-shield #screenExam,
+body.exam-screenshot-shield .top-header {
+  filter: blur(26px) brightness(0.25) !important;
+  opacity: 0.08 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+.proctor-privacy-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(2, 6, 23, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.proctor-privacy-shield.hidden {
+  display: none;
+}
+
+.proctor-shield-card {
+  max-width: 460px;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  border-radius: var(--radius-lg, 12px);
+  padding: 28px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
 }

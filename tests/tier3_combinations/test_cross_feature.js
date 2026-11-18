@@ -293,63 +293,97 @@ suite.test('Proctoring Telemetry + Score: Violations flag isClean=false without 
   assertEqual(history.scoresByGroup.TWK, 5, 'Violations do not deduct academic points');
 });
 
-// 17. Anti-copy, contextmenu ("Ask AI"/"Copy"), selection & shortcut lock during active exam
-suite.test('Proctor Security: Blocks right-click, copy, selection & devtools shortcuts during active exam', () => {
+function mountProctorSandbox(mockEnv, examEngine, store) {
   const fs = require('fs');
   const path = require('path');
   const vm = require('vm');
 
-  const screenExamEl = env.document.createElement('div');
+  const screenExamEl = mockEnv.document.createElement('div');
   screenExamEl.id = 'screenExam';
   screenExamEl.classList.add('hidden');
-  env.document.body.appendChild(screenExamEl);
+  mockEnv.document.body.appendChild(screenExamEl);
 
-  const toastEl = env.document.createElement('div');
+  const watermarkEl = mockEnv.document.createElement('div');
+  watermarkEl.id = 'examWatermarkLayer';
+  watermarkEl.classList.add('hidden');
+  screenExamEl.appendChild(watermarkEl);
+
+  const toastEl = mockEnv.document.createElement('div');
   toastEl.id = 'proctorSecurityToast';
   toastEl.classList.add('hidden');
-  const toastTextEl = env.document.createElement('span');
+  const toastTextEl = mockEnv.document.createElement('span');
   toastTextEl.id = 'proctorSecurityToastText';
   toastEl.appendChild(toastTextEl);
-  env.document.body.appendChild(toastEl);
+  mockEnv.document.body.appendChild(toastEl);
+
+  const shieldEl = mockEnv.document.createElement('div');
+  shieldEl.id = 'proctorPrivacyShield';
+  shieldEl.classList.add('hidden');
+  const shieldTextEl = mockEnv.document.createElement('p');
+  shieldTextEl.id = 'proctorPrivacyShieldText';
+  shieldEl.appendChild(shieldTextEl);
+  mockEnv.document.body.appendChild(shieldEl);
 
   let clearedRanges = 0;
-  env.window.getSelection = () => ({
+  let clipboardWritten = null;
+  mockEnv.window.getSelection = () => ({
     isCollapsed: false,
     rangeCount: 1,
     anchorNode: screenExamEl,
     removeAllRanges() { clearedRanges++; }
   });
-  env.window.Exam = exam;
+  mockEnv.window.Exam = examEngine;
+  if (store) mockEnv.window.Storage = store;
+  mockEnv.window.navigator.clipboard = {
+    writeText(txt) {
+      clipboardWritten = txt;
+      return Promise.resolve();
+    }
+  };
 
   const proctorSrc = fs.readFileSync(path.resolve(__dirname, '../../js/proctor.js'), 'utf8');
   const sandbox = {
-    window: env.window,
-    document: env.document,
-    navigator: env.window.navigator,
-    setTimeout: env.window.setTimeout,
-    clearTimeout: env.window.clearTimeout,
-    setInterval: env.window.setInterval,
-    clearInterval: env.window.clearInterval,
+    window: mockEnv.window,
+    document: mockEnv.document,
+    navigator: mockEnv.window.navigator,
+    setTimeout: mockEnv.window.setTimeout,
+    clearTimeout: mockEnv.window.clearTimeout,
+    setInterval: mockEnv.window.setInterval,
+    clearInterval: mockEnv.window.clearInterval,
     Date,
     Math,
     JSON,
     console
   };
   vm.runInNewContext(proctorSrc, sandbox);
-  const Proctor = sandbox.window.Proctor;
 
-  const makeEvt = (type, extra = {}) => {
-    const evt = {
-      type,
-      target: screenExamEl,
-      defaultPrevented: false,
-      propagationStopped: false,
-      preventDefault() { this.defaultPrevented = true; },
-      stopPropagation() { this.propagationStopped = true; },
-      ...extra
-    };
-    return evt;
+  const makeEvt = (type, extra = {}) => ({
+    type,
+    target: screenExamEl,
+    defaultPrevented: false,
+    propagationStopped: false,
+    preventDefault() { this.defaultPrevented = true; },
+    stopPropagation() { this.propagationStopped = true; },
+    ...extra
+  });
+
+  return {
+    Proctor: sandbox.window.Proctor,
+    screenExamEl,
+    watermarkEl,
+    toastEl,
+    shieldEl,
+    makeEvt,
+    getClearedRanges: () => clearedRanges,
+    getClipboardWritten: () => clipboardWritten,
+    readExamCss: () => fs.readFileSync(path.resolve(__dirname, '../../css/exam.css'), 'utf8')
   };
+}
+
+// 17. Anti-copy, contextmenu ("Ask AI"/"Copy"), selection & shortcut lock during active exam
+suite.test('Proctor Security: Blocks right-click, copy, selection & devtools shortcuts during active exam', () => {
+  const ctx = mountProctorSandbox(env, exam, storage);
+  const { Proctor, screenExamEl, toastEl, makeEvt, getClearedRanges } = ctx;
 
   // Before exam starts: allowed
   const preCtxEvt = makeEvt('contextmenu');
@@ -397,7 +431,7 @@ suite.test('Proctor Security: Blocks right-click, copy, selection & devtools sho
   const devtoolsEvt = makeEvt('keydown', { key: 'I', ctrlKey: true, shiftKey: true });
   env.document.dispatchEvent(devtoolsEvt);
   assertEqual(devtoolsEvt.defaultPrevented, true, 'Ctrl+Shift+I blocked during exam');
-  assert(clearedRanges > 0, 'Selection ranges actively cleared');
+  assert(getClearedRanges() > 0, 'Selection ranges actively cleared');
 
   // After finishing exam: unlocked
   exam.finish();
@@ -413,32 +447,10 @@ suite.test('Proctor Security: Blocks right-click, copy, selection & devtools sho
 
 // 18. Study mode locked while Review mode allows copying explanations
 suite.test('Proctor Security: Blocks copy in Study mode and unlocks in Review mode + CSS guard exists', () => {
-  const fs = require('fs');
-  const path = require('path');
-  const vm = require('vm');
+  const ctx = mountProctorSandbox(env, exam, storage);
+  const { Proctor, screenExamEl, readExamCss } = ctx;
 
-  const screenExamEl = env.document.createElement('div');
-  screenExamEl.id = 'screenExam';
-  env.document.body.appendChild(screenExamEl);
-
-  env.window.Exam = exam;
-  const proctorSrc = fs.readFileSync(path.resolve(__dirname, '../../js/proctor.js'), 'utf8');
-  const sandbox = {
-    window: env.window,
-    document: env.document,
-    navigator: env.window.navigator,
-    setTimeout: env.window.setTimeout,
-    clearTimeout: env.window.clearTimeout,
-    setInterval: env.window.setInterval,
-    clearInterval: env.window.clearInterval,
-    Date,
-    Math,
-    JSON,
-    console
-  };
-  vm.runInNewContext(proctorSrc, sandbox);
-  const Proctor = sandbox.window.Proctor;
-
+  screenExamEl.classList.remove('hidden');
   exam.start('skd_hots', 'study');
   assertEqual(Proctor.isExamCopyProtected(), true, 'Study mode active exam protects question text');
 
@@ -451,10 +463,84 @@ suite.test('Proctor Security: Blocks copy in Study mode and unlocks in Review mo
   });
   assertEqual(Proctor.syncCopyProtection(), false, 'Review mode unlocks copy/right-click');
 
-  const examCss = fs.readFileSync(path.resolve(__dirname, '../../css/exam.css'), 'utf8');
-  assert(examCss.includes('body.exam-copy-locked #screenExam'), 'CSS lock selector present in css/exam.css');
+  const examCss = readExamCss();
+  assert(examCss.includes('body.exam-copy-locked'), 'CSS lock selector present in css/exam.css');
   assert(examCss.includes('user-select: none !important'), 'CSS enforces user-select: none during active exam');
   assert(examCss.includes('-webkit-touch-callout: none !important'), 'CSS disables mobile touch callout during exam');
+  assert(examCss.includes('body.exam-screenshot-shield #screenExam'), 'CSS screenshot blur shield present');
+  assert(examCss.includes('.exam-watermark-layer'), 'CSS candidate watermark layer present');
+});
+
+// 19. Anti-screenshot curtain, PrintScreen/Win+Shift+S/Ctrl+Shift+S, window blur & watermark
+suite.test('Proctor Anti-Screenshot: Activates privacy shield on PrintScreen, Snipping blur & renders watermark', () => {
+  auth.register({
+    nama: 'Bima Pratama',
+    email: 'bima@cat.id',
+    noHp: '081299988877',
+    pin: '123456'
+  });
+  const ctx = mountProctorSandbox(env, exam, storage);
+  const { Proctor, screenExamEl, watermarkEl, shieldEl, makeEvt, getClipboardWritten } = ctx;
+
+  exam.start('skd_hots', 'cat');
+  screenExamEl.classList.remove('hidden');
+  Proctor.syncCopyProtection();
+
+  // Dynamic participant watermark rendered inside question card
+  assertEqual(watermarkEl.classList.contains('hidden'), false, 'Watermark shown during active exam');
+  assert(watermarkEl.innerHTML.includes('27-01-081299988877'), 'Watermark stamps active noPeserta');
+
+  // Window blur (e.g. Win+Shift+S Snipping Tool overlay) immediately engages privacy shield
+  env.window.dispatchEvent({ type: 'blur' });
+  assertEqual(env.document.body.classList.contains('exam-screenshot-shield'), true, 'Window blur enables screenshot blur shield');
+  assertEqual(shieldEl.classList.contains('hidden'), false, 'Privacy shield overlay visible on focus loss');
+
+  // Window focus restores view when no timed PrintScreen penalty active
+  env.window.dispatchEvent({ type: 'focus' });
+  assertEqual(env.document.body.classList.contains('exam-screenshot-shield'), false, 'Focus return restores screen');
+  assertEqual(shieldEl.classList.contains('hidden'), true, 'Privacy shield hides on focus return');
+
+  // PrintScreen keyup activates timed shield + overwrites clipboard
+  const prtEvt = makeEvt('keyup', { key: 'PrintScreen', keyCode: 44, code: 'PrintScreen' });
+  env.document.dispatchEvent(prtEvt);
+  assertEqual(prtEvt.defaultPrevented, true, 'PrintScreen intercepted');
+  assertEqual(env.document.body.classList.contains('exam-screenshot-shield'), true, 'PrintScreen triggers privacy shield');
+  assertEqual(shieldEl.classList.contains('hidden'), false, 'Privacy shield displayed on PrintScreen');
+  assert(typeof getClipboardWritten() === 'string' && getClipboardWritten().length > 0, 'Clipboard wiped on screenshot shortcut');
+
+  // Finish exam clears all shields, timers, and watermark cleanly
+  exam.finish();
+  screenExamEl.classList.add('hidden');
+  Proctor.syncCopyProtection();
+  assertEqual(env.document.body.classList.contains('exam-screenshot-shield'), false, 'Shield cleared on exam finish');
+  assertEqual(watermarkEl.classList.contains('hidden'), true, 'Watermark hidden after exam finish');
+  assertEqual(watermarkEl.innerHTML, '', 'Watermark content cleared after exam finish');
+
+  // Fresh study session verifies Win+Shift+S & Ctrl+Shift+S capture shortcuts
+  exam.start('skd_hots', 'study');
+  screenExamEl.classList.remove('hidden');
+  Proctor.syncCopyProtection();
+  const winSnipEvt = makeEvt('keydown', { key: 's', metaKey: true, shiftKey: true });
+  env.document.dispatchEvent(winSnipEvt);
+  assertEqual(winSnipEvt.defaultPrevented, true, 'Meta+Shift+S intercepted pre-emptively');
+  assertEqual(env.document.body.classList.contains('exam-screenshot-shield'), true, 'Win+Shift+S engages blur shield');
+
+  exam.finish();
+  screenExamEl.classList.add('hidden');
+  Proctor.syncCopyProtection();
+
+  exam.start('skd_hots', 'cat');
+  screenExamEl.classList.remove('hidden');
+  Proctor.syncCopyProtection();
+  const ctrlCapEvt = makeEvt('keydown', { key: 'S', ctrlKey: true, shiftKey: true });
+  env.document.dispatchEvent(ctrlCapEvt);
+  assertEqual(ctrlCapEvt.defaultPrevented, true, 'Ctrl+Shift+S web capture shortcut blocked');
+  assertEqual(env.document.body.classList.contains('exam-screenshot-shield'), true, 'Ctrl+Shift+S triggers privacy shield');
+
+  // Cleanup active timers before test exits
+  exam.finish();
+  screenExamEl.classList.add('hidden');
+  Proctor.syncCopyProtection();
 });
 
 module.exports = suite;
