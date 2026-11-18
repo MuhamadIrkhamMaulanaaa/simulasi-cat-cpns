@@ -322,6 +322,8 @@ function togglePasswordVisibility(inputId, btnEl) {
   syncEyeToggleState(btnEl || document.querySelector(`[data-eye-for="${inputId}"]`), nextVisible);
 }
 
+const REGISTER_FOTO_HINT_TEXT =
+  'Wajib unggah pas foto (JPG/PNG/WebP) untuk membuat Kartu Peserta Simulasi.';
 let pendingRegisterFotoDataUrl = '';
 let pendingEditFotoDataUrl = '';
 let isCompressingRegisterFoto = false;
@@ -434,7 +436,7 @@ function handleRegisterFotoChange(inputEl) {
     previewWrapId: 'authFotoPreviewWrap',
     statusId: 'authFotoStatusText',
     errBoxId: 'authRegisterError',
-    emptyText: 'Wajib JPG/PNG/WebP. Otomatis disesuaikan ke rasio 3:4 untuk Kartu Peserta & arsip Drive pribadi admin.',
+    emptyText: REGISTER_FOTO_HINT_TEXT,
     setLoading: (v) => { isCompressingRegisterFoto = v; },
     onResult: (url) => { pendingRegisterFotoDataUrl = url; }
   });
@@ -489,7 +491,7 @@ function resetAuthModalFields() {
     'authFotoPreviewWrap',
     'authFotoStatusText',
     '',
-    'Wajib JPG/PNG/WebP. Otomatis disesuaikan ke rasio 3:4 untuk Kartu Peserta & arsip Drive pribadi admin.'
+    REGISTER_FOTO_HINT_TEXT
   );
 }
 
@@ -906,7 +908,7 @@ function handleRegisterSubmit(event) {
     if (errBox) {
       errBox.textContent = isCompressingRegisterFoto
         ? 'Pas foto sedang diproses. Mohon tunggu sebentar lalu klik Daftar lagi.'
-        : 'Pas foto resmi 3:4 wajib diunggah sebelum mendaftar.';
+        : 'Pas foto wajib diunggah untuk membuat Kartu Peserta Simulasi.';
       errBox.classList.remove('hidden');
     }
     return;
