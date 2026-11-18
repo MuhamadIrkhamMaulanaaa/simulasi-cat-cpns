@@ -756,7 +756,14 @@ const Exam = (function () {
     const totEl = document.getElementById('statHdrTotal');
     if (totEl) totEl.textContent = String(st.questions.length);
 
-    if (window.Proctor) window.Proctor.updateProctorViolationsUI();
+    if (window.Proctor) {
+      if (typeof window.Proctor.updateProctorViolationsUI === 'function') {
+        window.Proctor.updateProctorViolationsUI();
+      }
+      if (typeof window.Proctor.syncCopyProtection === 'function') {
+        window.Proctor.syncCopyProtection();
+      }
+    }
     updateTimerUI();
     renderQuestion();
   }
@@ -1047,6 +1054,9 @@ const Exam = (function () {
 
     if (window.Result) window.Result.render(entry);
     if (window.showScreen) window.showScreen('result');
+    if (window.Proctor && typeof window.Proctor.syncCopyProtection === 'function') {
+      window.Proctor.syncCopyProtection();
+    }
     if (window.Landing) window.Landing.refresh();
     if (window.History) window.History.render();
   }

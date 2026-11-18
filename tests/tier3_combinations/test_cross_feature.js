@@ -293,6 +293,170 @@ suite.test('Proctoring Telemetry + Score: Violations flag isClean=false without 
   assertEqual(history.scoresByGroup.TWK, 5, 'Violations do not deduct academic points');
 });
 
+// 17. Anti-copy, contextmenu ("Ask AI"/"Copy"), selection & shortcut lock during active exam
+suite.test('Proctor Security: Blocks right-click, copy, selection & devtools shortcuts during active exam', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const vm = require('vm');
+
+  const screenExamEl = env.document.createElement('div');
+  screenExamEl.id = 'screenExam';
+  screenExamEl.classList.add('hidden');
+  env.document.body.appendChild(screenExamEl);
+
+  const toastEl = env.document.createElement('div');
+  toastEl.id = 'proctorSecurityToast';
+  toastEl.classList.add('hidden');
+  const toastTextEl = env.document.createElement('span');
+  toastTextEl.id = 'proctorSecurityToastText';
+  toastEl.appendChild(toastTextEl);
+  env.document.body.appendChild(toastEl);
+
+  let clearedRanges = 0;
+  env.window.getSelection = () => ({
+    isCollapsed: false,
+    rangeCount: 1,
+    anchorNode: screenExamEl,
+    removeAllRanges() { clearedRanges++; }
+  });
+  env.window.Exam = exam;
+
+  const proctorSrc = fs.readFileSync(path.resolve(__dirname, '../../js/proctor.js'), 'utf8');
+  const sandbox = {
+    window: env.window,
+    document: env.document,
+    navigator: env.window.navigator,
+    setTimeout: env.window.setTimeout,
+    clearTimeout: env.window.clearTimeout,
+    setInterval: env.window.setInterval,
+    clearInterval: env.window.clearInterval,
+    Date,
+    Math,
+    JSON,
+    console
+  };
+  vm.runInNewContext(proctorSrc, sandbox);
+  const Proctor = sandbox.window.Proctor;
+
+  const makeEvt = (type, extra = {}) => {
+    const evt = {
+      type,
+      target: screenExamEl,
+      defaultPrevented: false,
+      propagationStopped: false,
+      preventDefault() { this.defaultPrevented = true; },
+      stopPropagation() { this.propagationStopped = true; },
+      ...extra
+    };
+    return evt;
+  };
+
+  // Before exam starts: allowed
+  const preCtxEvt = makeEvt('contextmenu');
+  env.document.dispatchEvent(preCtxEvt);
+  assertEqual(Proctor.isExamCopyProtected(), false, 'Protection inactive on landing');
+  assertEqual(preCtxEvt.defaultPrevented, false, 'Context menu allowed before exam');
+
+  // Start active CAT exam & enter exam screen
+  exam.start('skd_hots', 'cat');
+  screenExamEl.classList.remove('hidden');
+  assertEqual(Proctor.syncCopyProtection(), true, 'syncCopyProtection enables lock during active CAT');
+  assert(env.document.body.classList.contains('exam-copy-locked'), 'body gets exam-copy-locked class');
+
+  const ctxEvt = makeEvt('contextmenu');
+  env.document.dispatchEvent(ctxEvt);
+  assertEqual(ctxEvt.defaultPrevented, true, 'Right-click contextmenu must be blocked during CAT exam');
+  assertEqual(toastEl.classList.contains('hidden'), false, 'Security toast displays on blocked right-click');
+
+  let clipboardValue = null;
+  const copyEvt = makeEvt('copy', {
+    clipboardData: { setData(_, val) { clipboardValue = val; } }
+  });
+  env.document.dispatchEvent(copyEvt);
+  assertEqual(copyEvt.defaultPrevented, true, 'Copy event blocked during CAT exam');
+  assert(typeof clipboardValue === 'string' && clipboardValue.length > 0, 'Clipboard payload overwritten');
+
+  const selEvt = makeEvt('selectstart');
+  env.document.dispatchEvent(selEvt);
+  assertEqual(selEvt.defaultPrevented, true, 'Text selection start blocked during CAT exam');
+
+  const dragEvt = makeEvt('dragstart');
+  env.document.dispatchEvent(dragEvt);
+  assertEqual(dragEvt.defaultPrevented, true, 'Drag start blocked during CAT exam');
+
+  ['c', 'a', 'u', 'p', 's'].forEach((k) => {
+    const keyEvt = makeEvt('keydown', { key: k, ctrlKey: true });
+    env.document.dispatchEvent(keyEvt);
+    assertEqual(keyEvt.defaultPrevented, true, `Ctrl+${k.toUpperCase()} blocked during exam`);
+  });
+
+  const f12Evt = makeEvt('keydown', { key: 'F12', keyCode: 123 });
+  env.document.dispatchEvent(f12Evt);
+  assertEqual(f12Evt.defaultPrevented, true, 'F12 blocked during exam');
+
+  const devtoolsEvt = makeEvt('keydown', { key: 'I', ctrlKey: true, shiftKey: true });
+  env.document.dispatchEvent(devtoolsEvt);
+  assertEqual(devtoolsEvt.defaultPrevented, true, 'Ctrl+Shift+I blocked during exam');
+  assert(clearedRanges > 0, 'Selection ranges actively cleared');
+
+  // After finishing exam: unlocked
+  exam.finish();
+  screenExamEl.classList.add('hidden');
+  assertEqual(Proctor.syncCopyProtection(), false, 'Protection turns off when exam finishes');
+  assertEqual(env.document.body.classList.contains('exam-copy-locked'), false, 'body removes exam-copy-locked');
+  assertEqual(toastEl.classList.contains('hidden'), true, 'Security toast hides cleanly on exit');
+
+  const postCtxEvt = makeEvt('contextmenu');
+  env.document.dispatchEvent(postCtxEvt);
+  assertEqual(postCtxEvt.defaultPrevented, false, 'Context menu restored after exam finish');
+});
+
+// 18. Study mode locked while Review mode allows copying explanations
+suite.test('Proctor Security: Blocks copy in Study mode and unlocks in Review mode + CSS guard exists', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const vm = require('vm');
+
+  const screenExamEl = env.document.createElement('div');
+  screenExamEl.id = 'screenExam';
+  env.document.body.appendChild(screenExamEl);
+
+  env.window.Exam = exam;
+  const proctorSrc = fs.readFileSync(path.resolve(__dirname, '../../js/proctor.js'), 'utf8');
+  const sandbox = {
+    window: env.window,
+    document: env.document,
+    navigator: env.window.navigator,
+    setTimeout: env.window.setTimeout,
+    clearTimeout: env.window.clearTimeout,
+    setInterval: env.window.setInterval,
+    clearInterval: env.window.clearInterval,
+    Date,
+    Math,
+    JSON,
+    console
+  };
+  vm.runInNewContext(proctorSrc, sandbox);
+  const Proctor = sandbox.window.Proctor;
+
+  exam.start('skd_hots', 'study');
+  assertEqual(Proctor.isExamCopyProtected(), true, 'Study mode active exam protects question text');
+
+  const history = exam.finish();
+  exam.enterReviewMode({
+    pkg: exam.getState().pkg,
+    questionsList: history ? loadQuestions().slice(0, 10) : [],
+    answersMap: {},
+    onlyMistakes: false
+  });
+  assertEqual(Proctor.syncCopyProtection(), false, 'Review mode unlocks copy/right-click');
+
+  const examCss = fs.readFileSync(path.resolve(__dirname, '../../css/exam.css'), 'utf8');
+  assert(examCss.includes('body.exam-copy-locked #screenExam'), 'CSS lock selector present in css/exam.css');
+  assert(examCss.includes('user-select: none !important'), 'CSS enforces user-select: none during active exam');
+  assert(examCss.includes('-webkit-touch-callout: none !important'), 'CSS disables mobile touch callout during exam');
+});
+
 module.exports = suite;
 
 if (require.main === module) {

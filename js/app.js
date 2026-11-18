@@ -276,9 +276,14 @@ function showScreen(screenName) {
   const mode = st ? st.mode : null;
   const isLockedCat = isExam && mode === 'cat';
   const isWorkingExam = isExam && (mode === 'cat' || mode === 'study');
+  const isCopyLocked = isWorkingExam && !(st && st.isFinished);
 
   document.body.classList.toggle('in-exam', isExam);
   document.body.classList.toggle('is-cat-locked', isLockedCat);
+  document.body.classList.toggle('exam-copy-locked', isCopyLocked);
+  if (window.Proctor && typeof window.Proctor.syncCopyProtection === 'function') {
+    window.Proctor.syncCopyProtection();
+  }
 
   const hdrStats = document.getElementById('catHeaderStats');
   const timerWrap = document.getElementById('examTimerWrapper');

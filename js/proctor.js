@@ -13,6 +13,7 @@ const Proctor = (function () {
   let violationStartTime = 0;
   let lastViolationBeepTime = 0;
   let isExitingCleanly = false;
+  let securityToastTimer = null;
   const faceHistoryBuffer = [];
 
   if (typeof window !== 'undefined' && 'FaceDetector' in window) {
@@ -24,9 +25,150 @@ const Proctor = (function () {
   }
 
   function getExamState() {
-    return window.Exam && typeof window.Exam.getState === 'function'
+    return typeof window !== 'undefined' && window.Exam && typeof window.Exam.getState === 'function'
       ? window.Exam.getState()
       : null;
+  }
+
+  function isExamCopyProtected() {
+    if (typeof document === 'undefined') return false;
+    const screenExam = document.getElementById('screenExam');
+    if (!screenExam || screenExam.classList.contains('hidden')) return false;
+    const st = getExamState();
+    if (!st || !st.isActive || st.isFinished) return false;
+    return st.mode === 'cat' || st.mode === 'study';
+  }
+
+  function isEditableTarget(target) {
+    if (!target) return false;
+    const el = target.nodeType === 3 ? target.parentElement : target;
+    if (!el) return false;
+    const tag = String(el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || Boolean(el.isContentEditable);
+  }
+
+  function clearTextSelection() {
+    try {
+      const sel = typeof window !== 'undefined' && typeof window.getSelection === 'function'
+        ? window.getSelection()
+        : null;
+      if (sel && typeof sel.removeAllRanges === 'function') {
+        sel.removeAllRanges();
+      }
+    } catch (_) {}
+  }
+
+  function hideCopyBlockedNotice() {
+    if (securityToastTimer) {
+      clearTimeout(securityToastTimer);
+      securityToastTimer = null;
+    }
+    if (typeof document === 'undefined') return;
+    const toast = document.getElementById('proctorSecurityToast');
+    if (toast) toast.classList.add('hidden');
+  }
+
+  function showCopyBlockedNotice(message) {
+    if (typeof document === 'undefined') return;
+    const toast = document.getElementById('proctorSecurityToast');
+    const textEl = document.getElementById('proctorSecurityToastText');
+    if (!toast) return;
+    if (textEl && message) textEl.textContent = message;
+    toast.classList.remove('hidden');
+    if (securityToastTimer) clearTimeout(securityToastTimer);
+    securityToastTimer = setTimeout(() => {
+      toast.classList.add('hidden');
+      securityToastTimer = null;
+    }, 2400);
+  }
+
+  function syncCopyProtection() {
+    const locked = isExamCopyProtected();
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.toggle('exam-copy-locked', locked);
+    }
+    if (locked) {
+      clearTextSelection();
+    } else {
+      hideCopyBlockedNotice();
+    }
+    return locked;
+  }
+
+  function blockEvent(e) {
+    if (!e) return;
+    if (typeof e.preventDefault === 'function') e.preventDefault();
+    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+  }
+
+  function handleProtectedContextMenu(e) {
+    if (!isExamCopyProtected()) return;
+    blockEvent(e);
+    clearTextSelection();
+    showCopyBlockedNotice('Klik kanan, Salin, dan Tanya AI dinonaktifkan selama ujian berlangsung.');
+  }
+
+  function handleProtectedRightClickDown(e) {
+    if (!isExamCopyProtected() || !e || e.button !== 2) return;
+    blockEvent(e);
+    clearTextSelection();
+  }
+
+  function handleProtectedCopyOrCut(e) {
+    if (!isExamCopyProtected() || isEditableTarget(e && e.target)) return;
+    blockEvent(e);
+    if (e && e.clipboardData && typeof e.clipboardData.setData === 'function') {
+      try {
+        e.clipboardData.setData('text/plain', 'Konten soal CAT CPNS dilindungi selama ujian.');
+      } catch (_) {}
+    }
+    clearTextSelection();
+    showCopyBlockedNotice('Menyalin teks soal dan pilihan jawaban dinonaktifkan selama ujian.');
+  }
+
+  function handleProtectedSelectStart(e) {
+    if (!isExamCopyProtected() || isEditableTarget(e && e.target)) return;
+    blockEvent(e);
+    clearTextSelection();
+  }
+
+  function handleProtectedDragStart(e) {
+    if (!isExamCopyProtected() || isEditableTarget(e && e.target)) return;
+    blockEvent(e);
+  }
+
+  function handleProtectedSelectionChange() {
+    if (!isExamCopyProtected()) return;
+    try {
+      const sel = typeof window !== 'undefined' && typeof window.getSelection === 'function'
+        ? window.getSelection()
+        : null;
+      if (sel && !sel.isCollapsed && sel.rangeCount > 0 && !isEditableTarget(sel.anchorNode)) {
+        sel.removeAllRanges();
+      }
+    } catch (_) {}
+  }
+
+  function handleProtectedKeydown(e) {
+    if (!isExamCopyProtected() || !e) return;
+    const key = String(e.key || '').toLowerCase();
+    const hasMod = Boolean(e.ctrlKey || e.metaKey);
+    const editable = isEditableTarget(e.target);
+
+    const isDevToolsShortcut =
+      key === 'f12' ||
+      e.keyCode === 123 ||
+      (hasMod && e.shiftKey && ['i', 'j', 'c', 'k', 's'].includes(key)) ||
+      (e.metaKey && e.altKey && ['i', 'j', 'c', 'u'].includes(key));
+
+    const isCopyExportShortcut =
+      hasMod && !e.altKey && ['c', 'x', 'a', 'u', 's', 'p'].includes(key) && (!editable || ['u', 's', 'p'].includes(key));
+
+    if (isDevToolsShortcut || isCopyExportShortcut) {
+      blockEvent(e);
+      clearTextSelection();
+      showCopyBlockedNotice('Pintasan salin, cetak, dan inspeksi dinonaktifkan selama ujian.');
+    }
   }
 
   function persistSnapshot() {
@@ -581,6 +723,15 @@ const Proctor = (function () {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('contextmenu', handleProtectedContextMenu, true);
+    document.addEventListener('mousedown', handleProtectedRightClickDown, true);
+    document.addEventListener('auxclick', handleProtectedRightClickDown, true);
+    document.addEventListener('copy', handleProtectedCopyOrCut, true);
+    document.addEventListener('cut', handleProtectedCopyOrCut, true);
+    document.addEventListener('selectstart', handleProtectedSelectStart, true);
+    document.addEventListener('dragstart', handleProtectedDragStart, true);
+    document.addEventListener('selectionchange', handleProtectedSelectionChange);
+    document.addEventListener('keydown', handleProtectedKeydown, true);
   }
 
   return {
@@ -595,7 +746,15 @@ const Proctor = (function () {
     startWebcamStream,
     stopWebcamStream,
     startFaceTrackingAI,
-    stopFaceTrackingAI
+    stopFaceTrackingAI,
+    isExamCopyProtected,
+    syncCopyProtection,
+    handleProtectedContextMenu,
+    handleProtectedCopyOrCut,
+    handleProtectedSelectStart,
+    handleProtectedDragStart,
+    handleProtectedSelectionChange,
+    handleProtectedKeydown
   };
 })();
 
@@ -611,6 +770,8 @@ if (typeof window !== 'undefined') {
   window.stopWebcamStream = Proctor.stopWebcamStream;
   window.startFaceTrackingAI = Proctor.startFaceTrackingAI;
   window.stopFaceTrackingAI = Proctor.stopFaceTrackingAI;
+  window.isExamCopyProtected = Proctor.isExamCopyProtected;
+  window.syncCopyProtection = Proctor.syncCopyProtection;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
