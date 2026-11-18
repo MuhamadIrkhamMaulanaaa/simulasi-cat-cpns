@@ -119,8 +119,12 @@ const History = (function () {
     if (!entries.length) {
       container.innerHTML = `
         <div class="empty-state-box">
-          <p>Belum ada riwayat ujian yang tersimpan untuk tampilan ini. Mulai salah satu paket simulasi untuk merekam nilai, analisis passing grade, dan review pembahasan.</p>
-          <button type="button" class="btn btn-primary" onclick="switchHomeTab('pkg')">Pilih Paket Simulasi</button>
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-2 16c-2.05 0-3.81-1.24-4.58-3h1.71c.63.9 1.68 1.5 2.87 1.5 1.93 0 3.5-1.57 3.5-3.5S13.93 9.5 12 9.5c-1.35 0-2.52.78-3.1 1.9l1.6 1.6h-4V9l1.3 1.3C8.69 8.92 10.23 8 12 8c2.76 0 5 2.24 5 5s-2.24 5-5 5z"/></svg>
+          </div>
+          <div class="empty-state-title">Belum Ada Riwayat Simulasi</div>
+          <p>Anda belum memiliki riwayat penyelesaian simulasi pada tampilan ini. Mulai salah satu paket ujian CAT untuk merekam nilai, status passing grade, dan review pembahasan lengkap.</p>
+          <button type="button" class="btn btn-primary" onclick="switchHomeTab('pkg', true)">+ Mulai Simulasi CAT</button>
         </div>
       `;
       return;

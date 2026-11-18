@@ -543,6 +543,98 @@ suite.test('Proctor Anti-Screenshot: Activates privacy shield on PrintScreen, Sn
   Proctor.syncCopyProtection();
 });
 
+// 20. Photo upload mandatory gate, Drive private sync payload, PIN reset & Profile/Card rendering
+suite.test('Auth Photo & Recovery: Mandatory photo gate, Private Drive Apps Script, Reset PIN & Card preview', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const vm = require('vm');
+
+  const ids = [
+    'btnHdrUserWidget',
+    'userWelcomeBanner',
+    'profileViewContent',
+    'authRegisterError',
+    'authInputNama',
+    'authInputEmail',
+    'authInputNoHp',
+    'authInputFormasi',
+    'authInputPin',
+    'cardAvatarInitial',
+    'cardAvatarPhoto',
+    'cardAvatarPlaceholder',
+    'cardAvatarFrame',
+    'modalUserProfile'
+  ];
+  ids.forEach((id) => {
+    const el = env.document.createElement(id.includes('Photo') ? 'img' : 'div');
+    el.id = id;
+    env.document.body.appendChild(el);
+  });
+
+  env.window.Storage = storage;
+  const authSrc = fs.readFileSync(path.resolve(__dirname, '../../js/auth.js'), 'utf8');
+  const sandbox = {
+    window: env.window,
+    document: env.document,
+    navigator: env.window.navigator,
+    setTimeout: env.window.setTimeout,
+    clearTimeout: env.window.clearTimeout,
+    Date,
+    Math,
+    JSON,
+    console
+  };
+  vm.runInNewContext(authSrc, sandbox);
+  const RealAuth = sandbox.window.Auth;
+
+  // UI form submission without uploaded photo must fail with explicit validation error
+  env.document.getElementById('authInputNama').value = 'Dewi Kartika';
+  env.document.getElementById('authInputEmail').value = 'dewi@cpns.id';
+  env.document.getElementById('authInputNoHp').value = '081234567890';
+  env.document.getElementById('authInputPin').value = '123456';
+  sandbox.window.handleRegisterSubmit();
+  const regErrEl = env.document.getElementById('authRegisterError');
+  assert(regErrEl.textContent.includes('Pas foto'), 'Mandatory photo error displayed when photo absent');
+
+  // Programmatic registration with compressed JPEG data URL persists and renders on Profile + Card
+  const fakeDataUrl = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/';
+  const reg = RealAuth.register({
+    nama: 'Dewi Kartika',
+    email: 'dewi@cpns.id',
+    noHp: '081234567890',
+    formasi: 'Pranata Komputer Ahli Pertama',
+    pin: '123456',
+    fotoDataUrl: fakeDataUrl
+  });
+  assertEqual(reg.success, true);
+  assertEqual(reg.user.fotoDataUrl, fakeDataUrl);
+
+  RealAuth.syncUI(env.document);
+  assert(env.document.getElementById('btnHdrUserWidget').innerHTML.includes(fakeDataUrl), 'Header renders participant photo');
+  assert(env.document.getElementById('profileViewContent').innerHTML.includes(fakeDataUrl), 'Profile renders participant photo');
+
+  sandbox.window.openUserProfileModal();
+  const cardPhoto = env.document.getElementById('cardAvatarPhoto');
+  assertEqual(cardPhoto.src, fakeDataUrl, 'Printable participant card uses actual photo');
+  assertEqual(cardPhoto.classList.contains('hidden'), false, 'Printable card photo unhidden');
+  assertEqual(env.document.getElementById('cardAvatarPlaceholder').classList.contains('hidden'), true, 'Initial placeholder hidden when photo set');
+
+  // Reset PIN validates matching email + phone and preserves existing photo/user
+  const badReset = RealAuth.resetPin({ email: 'dewi@cpns.id', noHp: '089999999999', newPin: '654321' });
+  assertEqual(badReset.success, false, 'Mismatched phone rejected on PIN reset');
+
+  const okReset = RealAuth.resetPin({ email: 'dewi@cpns.id', noHp: '081234567890', newPin: '654321' });
+  assertEqual(okReset.success, true, 'Matching Email + HP resets PIN cleanly');
+  assertEqual(RealAuth.login({ identifier: 'dewi@cpns.id', pin: '654321' }).success, true, 'New PIN logs in');
+
+  // Apps Script file checks: preserves old rows, targets Data pengguna, keeps Drive files PRIVATE
+  const gasSrc = fs.readFileSync(path.resolve(__dirname, '../../KODE_GOOGLE_APPS_SCRIPT_SPREADSHEET.js'), 'utf8');
+  assert(gasSrc.includes('getSheetByName("Data pengguna")'), 'Apps Script targets Data pengguna sheet');
+  assert(gasSrc.includes('sheet.getLastRow() === 0'), 'Apps Script never wipes existing rows');
+  assert(gasSrc.includes('DriveApp.Access.PRIVATE'), 'Apps Script enforces Private Drive permissions');
+  assert(gasSrc.includes('sheet.appendRow'), 'Apps Script appends new registrations cleanly');
+});
+
 module.exports = suite;
 
 if (require.main === module) {

@@ -14,6 +14,176 @@ function landEsc(str) {
 const Landing = (function () {
   let activeCategory = 'all'; // 'all' | 'skd' | 'drill' | 'skb'
   let searchQuery = '';
+  let activeHeroSlide = 0;
+  let activeTimelineTrack = 'skd';
+  let heroAutoTimer = null;
+
+  const HERO_SLIDES = [
+    {
+      title: 'Seleksi CPNS &amp; Sekolah Kedinasan 2027',
+      tag: 'Pelaksanaan SKD &amp; SKB Metode CAT BKN • 610 Soal',
+      desc: 'Ikuti simulasi CAT BKN 110 soal (100 menit) sesuai KepmenPANRB 321/2024 lengkap dengan timer anti-drift, pengawasan kamera proctor, serta review rumus cepat &lt;15 detik.'
+    },
+    {
+      title: 'Target Passing Grade &amp; Ranking BKN',
+      tag: 'TWK &ge; 65 &bull; TIU &ge; 80 &bull; TKP &ge; 166 &bull; Aman &ge; 430',
+      desc: 'Pantau ambang batas per subtes secara real-time, lengkap dengan algoritma pemutus seri resmi BKN (TKP &rarr; TIU &rarr; TWK) dan rekap progres tiap peserta.'
+    },
+    {
+      title: 'Karantina Layar Penuh &amp; Anti-Cheat',
+      tag: 'Fullscreen Lock &bull; Anti-Copy &bull; Auto-Save Tahan Refresh',
+      desc: 'Berlatih di lingkungan ujian steril bebas salin soal &amp; tangkapan layar, dilengkapi pemulihan sesi otomatis saat terjadi kendala koneksi atau penutupan tidak sengaja.'
+    }
+  ];
+
+  const PACKAGE_SHOWCASE_TRACKS = {
+    skd: {
+      ids: ['skd_hots', 'skd_p1', 'skd_p2', 'skd_p3', 'fr_bocoran'],
+      icons: { skd_hots: 'award', skd_p1: 'doc', skd_p2: 'grad', skd_p3: 'shield', fr_bocoran: 'calc' },
+      shortNames: {
+        skd_hots: 'Tryout SKD Utama HOTS',
+        skd_p1: 'Tryout SKD Paket 1 Nasional',
+        skd_p2: 'Tryout SKD Paket 2 Kedinasan',
+        skd_p3: 'Tryout SKD Paket 3 Siber',
+        fr_bocoran: 'Drill FR Sekolah Kedinasan'
+      }
+    },
+    drill: {
+      ids: ['fr_bocoran', 'twk_drill', 'tiu_drill', 'tkp_drill'],
+      icons: { fr_bocoran: 'calc', twk_drill: 'book', tiu_drill: 'doc', tkp_drill: 'shield' },
+      shortNames: {
+        fr_bocoran: 'FR Kedinasan Kotak & SVG',
+        twk_drill: 'Bank Drill Fokus TWK',
+        tiu_drill: 'Bank Drill Fokus TIU & SVG',
+        tkp_drill: 'Bank Drill Fokus TKP'
+      }
+    },
+    skb: {
+      ids: ['skb_p4', 'skb_hots', 'skb_prakom', 'skb_ptp_guru'],
+      icons: { skb_p4: 'award', skb_hots: 'shield', skb_prakom: 'calc', skb_ptp_guru: 'grad' },
+      shortNames: {
+        skb_p4: 'SKB Penuh CAT BKN (100 Soal)',
+        skb_hots: 'Paket Inti HOTS SKB',
+        skb_prakom: 'SKB Pranata Komputer & TI',
+        skb_ptp_guru: 'SKB PTP & Guru Informatika'
+      }
+    }
+  };
+
+  function getTimelineIconSvg(name) {
+    const paths = {
+      user: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
+      card: 'M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 11H5v-.9c0-2 4-3.1 6-3.1s6 1.1 6 3.1V18z',
+      doc: 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z',
+      cam: 'M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z',
+      check: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+      calc: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5.97 4.06L14.09 6l1.41 1.41L16.91 6l1.06 1.06-1.41 1.41 1.41 1.41-1.06 1.06-1.41-1.4-1.41 1.41-1.06-1.06 1.41-1.41-1.41-1.42zm-6.78.66h5v1.5h-5v-1.5zM11.5 16h-2v2H8v-2H6v-1.5h2v-2h1.5v2h2V16zm6.5 1.25h-5v-1.5h5v1.5zm0-2.5h-5v-1.5h5v1.5z',
+      shield: 'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z',
+      award: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
+      book: 'M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z',
+      grad: 'M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z'
+    };
+    const d = paths[name] || paths.doc;
+    return `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${d}"/></svg>`;
+  }
+
+  function renderHeroSlide() {
+    if (typeof document === 'undefined') return;
+    const slide = HERO_SLIDES[activeHeroSlide] || HERO_SLIDES[0];
+    const titleEl = document.getElementById('heroTitleText');
+    const tagEl = document.getElementById('heroTagText');
+    const subEl = document.getElementById('heroSubtitleText');
+    const dotsEl = document.getElementById('heroSlideDots');
+    if (titleEl) titleEl.innerHTML = slide.title;
+    if (tagEl) tagEl.innerHTML = slide.tag;
+    if (subEl) subEl.innerHTML = slide.desc;
+    if (dotsEl) {
+      dotsEl.innerHTML = HERO_SLIDES.map((_, idx) => `
+        <button type="button" class="hero-slide-dot ${idx === activeHeroSlide ? 'active' : ''}" onclick="setHeroSlide(${idx})" aria-label="Slide ${idx + 1}"></button>
+      `).join('');
+    }
+  }
+
+  function setHeroSlide(idx) {
+    activeHeroSlide = ((idx % HERO_SLIDES.length) + HERO_SLIDES.length) % HERO_SLIDES.length;
+    renderHeroSlide();
+  }
+
+  function nextHeroSlide() {
+    setHeroSlide(activeHeroSlide + 1);
+  }
+
+  function prevHeroSlide() {
+    setHeroSlide(activeHeroSlide - 1);
+  }
+
+  function renderTimeline() {
+    if (typeof document === 'undefined') return;
+    const container = document.getElementById('timelineBoardContainer');
+    const pillsEl = document.getElementById('timelineTrackPills');
+    if (!container) return;
+
+    const tracks = [
+      { id: 'skd', label: 'Simulasi SKD CPNS &amp; Sekolah Kedinasan' },
+      { id: 'drill', label: 'Drill Fokus TWK · TIU · TKP' },
+      { id: 'skb', label: 'Tryout SKB Teknis &amp; Guru' }
+    ];
+    if (pillsEl) {
+      pillsEl.innerHTML = tracks.map((t) => `
+        <button type="button" class="timeline-pill-btn ${activeTimelineTrack === t.id ? 'active' : ''}" onclick="setTimelineTrack('${t.id}')">${t.label}</button>
+      `).join('');
+    }
+
+    const pkgs = window.PACKAGES || [];
+    const allQ = window.ALL_QUESTIONS || [];
+    const cfg = PACKAGE_SHOWCASE_TRACKS[activeTimelineTrack] || PACKAGE_SHOWCASE_TRACKS.skd;
+    const items = cfg.ids
+      .map((id) => pkgs.find((p) => p.id === id))
+      .filter(Boolean);
+
+    const colClass = items.length === 4 ? 'cols-4' : items.length === 3 ? 'cols-3' : '';
+    const isLoggedIn = Boolean(window.Storage && window.Storage.getActiveUser());
+
+    container.innerHTML = `
+      <div class="timeline-row ${colClass}">
+        ${items.map((pkg) => {
+          const matched = allQ.filter(pkg.filter);
+          const qCount = matched.length;
+          const subSummary = getSubtestSummary(matched);
+          const locked = typeof window.isPackageLocked === 'function' ? window.isPackageLocked(pkg.id) : false;
+          const iconName = (cfg.icons && cfg.icons[pkg.id]) || 'doc';
+          const shortTitle = (cfg.shortNames && cfg.shortNames[pkg.id]) || pkg.title;
+          const actionLabel = isLoggedIn ? 'Mulai Tryout' : 'Masuk &amp; Mulai';
+          return `
+            <div class="timeline-step-card is-package">
+              <div class="timeline-icon-box">
+                ${getTimelineIconSvg(iconName)}
+                <span class="timeline-status-dot ${locked ? 'next' : 'done'}" title="${locked ? 'Akses Terkunci' : 'Gratis'}">${locked ? '&#128274;' : '&#10003;'}</span>
+              </div>
+              <div class="timeline-step-title">${landEsc(shortTitle)}</div>
+              <div class="timeline-step-date">${qCount} Soal &bull; ${pkg.minutes} Menit</div>
+              <div class="timeline-step-desc">${landEsc(subSummary || (pkg.isFullSKD ? 'Standar KepmenPANRB 321' : 'Latihan Intensif'))}</div>
+              <button type="button" class="timeline-step-btn" onclick="openPortalTabOrLogin('pkg', '${landEsc(pkg.id)}')">${actionLabel}</button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  function setTimelineTrack(trackId) {
+    activeTimelineTrack = PACKAGE_SHOWCASE_TRACKS[trackId] ? trackId : 'skd';
+    renderTimeline();
+  }
+
+  function ensureHeroCarouselRunning() {
+    if (typeof window === 'undefined' || heroAutoTimer) return;
+    heroAutoTimer = setInterval(() => {
+      if (typeof document !== 'undefined' && document.body && !document.body.classList.contains('in-exam') && !document.body.classList.contains('is-logged-in')) {
+        nextHeroSlide();
+      }
+    }, 6500);
+  }
 
   function getCategoryOfPackage(pkg) {
     if (pkg.isFullSKD) return 'skd';
@@ -345,6 +515,9 @@ const Landing = (function () {
   }
 
   function refresh() {
+    renderHeroSlide();
+    ensureHeroCarouselRunning();
+    renderTimeline();
     renderRecoveryBanner();
     renderHeroAndAuthCTA();
     renderPersonalSummaryBar();
@@ -358,7 +531,11 @@ const Landing = (function () {
     renderPackages,
     setPackageCategory,
     setPackageSearch,
-    resetPackageFilters
+    resetPackageFilters,
+    setHeroSlide,
+    nextHeroSlide,
+    prevHeroSlide,
+    setTimelineTrack
   };
 })();
 
@@ -368,6 +545,10 @@ if (typeof window !== 'undefined') {
   window.setPackageCategory = Landing.setPackageCategory;
   window.setPackageSearch = Landing.setPackageSearch;
   window.resetPackageFilters = Landing.resetPackageFilters;
+  window.setHeroSlide = Landing.setHeroSlide;
+  window.nextHeroSlide = Landing.nextHeroSlide;
+  window.prevHeroSlide = Landing.prevHeroSlide;
+  window.setTimelineTrack = Landing.setTimelineTrack;
 }
 
 if (typeof module !== 'undefined' && module.exports) {

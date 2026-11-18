@@ -6,6 +6,13 @@
 /* ==========================================================================
    RESULT CARD & HEADER
    ========================================================================== */
+#screenResult {
+  max-width: 1320px;
+  margin: 24px auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
 .result-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);

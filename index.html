@@ -1,580 +1,1168 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulasi CAT BKN CPNS 2027 (610 Soal)</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js"></script>
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/landing.css">
-<link rel="stylesheet" href="css/exam.css">
-<link rel="stylesheet" href="css/result.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulasi CAT BKN CPNS 2027 (610 Soal)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js"></script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/exam.css">
+  <link rel="stylesheet" href="css/result.css">
 </head>
+
 <body>
-<header class="site-header">
-  <div class="header-inner">
-    <div class="brand-group" onclick="handleBrandClick()" title="Kembali ke Beranda">
-      <div class="brand-logo-icon">CAT</div>
-      <div class="brand-text-wrap">
-        <span class="brand-title">Computer Assisted Test</span>
-        <span class="brand-pill">Simulasi Seleksi CASN 2027</span>
+  <header id="siteHeader" class="site-header">
+    <div class="header-inner">
+      <div class="brand-group" onclick="handleBrandClick()" title="Kembali ke Beranda">
+        <div class="brand-logo-pill">
+          <span class="brand-logo-main">SSCASN</span>
+          <span class="brand-logo-sub">Simulasi CAT CPNS 2027</span>
+        </div>
+        <div class="portal-brand-wrap">
+          <div class="portal-emblem-box" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l2.1 5.8h6.1l-4.9 3.6 1.9 5.8-5.2-3.7-5.2 3.7 1.9-5.8-4.9-3.6h6.1z" />
+            </svg>
+          </div>
+          <div class="brand-text-wrap">
+            <span class="brand-title" id="hdrPortalTitle">Beranda Simulasi &amp; Paket Soal</span>
+            <span class="brand-pill" id="hdrPortalSubtitle">Sistem Simulasi Seleksi Calon Aparatur Sipil Negara (CAT BKN
+              2027)</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="top-nav-links" aria-label="Navigasi Utama">
+        <button type="button" class="top-nav-link active" onclick="scrollHomeSection('top')">Beranda</button>
+        <button type="button" class="top-nav-link" onclick="scrollHomeSection('timeline')">Paket Penuh</button>
+        <button type="button" class="top-nav-link" onclick="openPortalTabOrLogin('pkg')">Portal Paket</button>
+        <button type="button" class="top-nav-link" onclick="openPortalTabOrLogin('cheat')">Materi &amp; SKB</button>
+        <button type="button" class="top-nav-link" onclick="openPortalTabOrLogin('hist')">Riwayat</button>
+        <button type="button" class="top-nav-link" onclick="scrollHomeSection('faq')">Panduan &amp; FAQ</button>
+      </nav>
+
+      <div id="catHeaderStats" class="cat-header-stats hidden">
+        <div class="cat-stat-item">
+          <span class="cat-stat-label">Batas Waktu</span>
+          <span class="cat-stat-val" id="statHdrLimit">100 Menit</span>
+        </div>
+        <div class="cat-stat-divider"></div>
+        <div class="cat-stat-item">
+          <span class="cat-stat-label">Jumlah Soal</span>
+          <span class="cat-stat-val" id="statHdrTotal">110</span>
+        </div>
+        <div class="cat-stat-divider"></div>
+        <div class="cat-stat-item">
+          <span class="cat-stat-label">Dijawab</span>
+          <span class="cat-stat-val c-ans" id="statHdrAns">0</span>
+        </div>
+        <div class="cat-stat-divider"></div>
+        <div class="cat-stat-item">
+          <span class="cat-stat-label">Ragu</span>
+          <span class="cat-stat-val c-doubt" id="statHdrDoubt">0</span>
+        </div>
+        <div class="cat-stat-divider"></div>
+        <div class="cat-stat-item">
+          <span class="cat-stat-label">Belum</span>
+          <span class="cat-stat-val c-empty" id="statHdrEmpty">110</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div id="examTimerWrapper" class="timer-wrapper hidden">
+          <div class="timer-col">
+            <span class="timer-num" id="timerHours">01</span>
+            <span class="timer-sub">JAM</span>
+          </div>
+          <span class="timer-sep">:</span>
+          <div class="timer-col">
+            <span class="timer-num" id="timerMinutes">39</span>
+            <span class="timer-sub">MENIT</span>
+          </div>
+          <span class="timer-sep">:</span>
+          <div class="timer-col">
+            <span class="timer-num" id="timerSeconds">50</span>
+            <span class="timer-sub">DETIK</span>
+          </div>
+        </div>
+        <button type="button" id="btnHdrFinish" class="btn btn-primary hidden" onclick="openFinishModal()">Selesai
+          Ujian</button>
+        <button type="button" id="btnHdrMenu" class="btn btn-ghost-dark hidden" onclick="showScreen('home')">Menu
+          Paket</button>
+        <button type="button" id="btnHdrRegister" class="btn hdr-register-btn"
+          onclick="openAuthModal(null, 'register')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          </svg>
+          Buat Akun
+        </button>
+        <div id="hdrUserMenuWrap" class="hdr-user-menu-wrap">
+          <button type="button" id="btnHdrUserWidget" class="btn hdr-login-btn" onclick="handleHeaderUserClick()">Masuk
+            / Daftar</button>
+          <div id="hdrUserDropdownMenu" class="hdr-user-dropdown hidden">
+            <div class="hdr-dropdown-head">
+              <div class="hdr-dropdown-name" id="hdrDropdownUserName">Peserta CAT</div>
+              <div class="hdr-dropdown-sub" id="hdrDropdownUserNo">-</div>
+            </div>
+            <button type="button" class="hdr-dropdown-item"
+              onclick="closeHeaderUserMenu(); switchHomeTab('profile', true);">Profile Saya</button>
+            <button type="button" class="hdr-dropdown-item"
+              onclick="closeHeaderUserMenu(); switchHomeTab('hist', true);">Riwayat Ujian</button>
+            <button type="button" class="hdr-dropdown-item"
+              onclick="closeHeaderUserMenu(); openUserProfileModal();">Cetak Kartu (A4)</button>
+            <button type="button" class="hdr-dropdown-item" onclick="closeHeaderUserMenu(); openDonationModal();">Donasi
+              &amp; Buka Akses</button>
+            <button type="button" class="hdr-dropdown-item"
+              onclick="closeHeaderUserMenu(); openAuthModal(null, 'login');">Ganti Akun</button>
+            <button type="button" class="hdr-dropdown-item danger" onclick="closeHeaderUserMenu(); logoutUser();">Keluar
+              Akun</button>
+          </div>
+        </div>
+        <button type="button" id="btnHdrDonasi" class="btn btn-ghost-dark hidden"
+          onclick="openDonationModal()">Donasi</button>
+        <button type="button" id="btnHdrTheme" class="btn-icon" onclick="toggleTheme()"
+          title="Ubah Mode Gelap / Terang">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 3c-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9 4.97 0 9-4.03 9-9 0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+          </svg>
+        </button>
       </div>
     </div>
-    <div id="catHeaderStats" class="cat-header-stats hidden">
-      <div class="cat-stat-item">
-        <span class="cat-stat-label">Batas Waktu</span>
-        <span class="cat-stat-val" id="statHdrLimit">100 Menit</span>
+  </header>
+
+  <div class="main-container">
+    <div id="screenHome" style="display:flex; flex-direction:column;">
+      <section id="homeHeroSection" class="landing-hero">
+        <div class="hero-map-bg" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <div class="hero-left">
+            <h1 id="heroTitleText" class="hero-title">Seleksi CPNS &amp; Sekolah Kedinasan 2027</h1>
+            <div id="heroTagText" class="hero-tag">Pelaksanaan SKD &amp; SKB Metode CAT BKN &bull; 610 Soal</div>
+            <p id="heroSubtitleText" class="hero-subtitle">
+              Ikuti simulasi CAT BKN 110 soal (100 menit) sesuai KepmenPANRB 321/2024 lengkap dengan timer anti-drift,
+              pengawasan kamera proctor, serta review rumus cepat &lt;15 detik.
+            </p>
+            <div class="hero-carousel-controls">
+              <button type="button" class="hero-slide-arrow" onclick="prevHeroSlide()"
+                aria-label="Slide Sebelumnya">&lsaquo;</button>
+              <div id="heroSlideDots" class="hero-slide-dots"></div>
+              <button type="button" class="hero-slide-arrow" onclick="nextHeroSlide()"
+                aria-label="Slide Berikutnya">&rsaquo;</button>
+            </div>
+            <div class="hero-actions">
+              <button type="button" class="btn btn-hero-white" onclick="openPortalTabOrLogin('pkg', 'skd_hots')">Mulai
+                Tryout SKD Utama</button>
+              <button type="button" id="heroAuthCtaBtn" class="btn btn-ghost-dark" onclick="openAuthModal()">Daftar /
+                Masuk Peserta</button>
+              <button type="button" class="btn btn-ghost-dark" onclick="scrollHomeSection('timeline')">Lihat Paket Soal
+                Penuh</button>
+            </div>
+            <div class="pg-infographic hero-pg-strip">
+              <div class="pg-card">
+                <div class="pg-card-subtest">TWK (30 Soal)</div>
+                <div class="pg-card-threshold">&ge; 65</div>
+                <div class="pg-card-desc">Maks. 150 &bull; +5 / 0</div>
+              </div>
+              <div class="pg-card">
+                <div class="pg-card-subtest">TIU (35 Soal)</div>
+                <div class="pg-card-threshold">&ge; 80</div>
+                <div class="pg-card-desc">Maks. 175 &bull; +5 / 0</div>
+              </div>
+              <div class="pg-card">
+                <div class="pg-card-subtest">TKP (45 Soal)</div>
+                <div class="pg-card-threshold">&ge; 166</div>
+                <div class="pg-card-desc">Maks. 225 &bull; Skala 1&ndash;5</div>
+              </div>
+              <div class="pg-card">
+                <div class="pg-card-subtest">Target 3x Formasi</div>
+                <div class="pg-card-threshold">&ge; 430</div>
+                <div class="pg-card-desc">Maks. 550 &bull; TKP&rarr;TIU&rarr;TWK</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-right-visual">
+            <img src="assets/hero-candidates.jpg" alt="Calon Peserta Seleksi ASN CPNS &amp; Kedinasan 2027"
+              class="hero-candidates-img">
+          </div>
+        </div>
+      </section>
+
+      <div id="homeSubNavStrip" class="sscasn-subnav-bar">
+        <div class="sscasn-subnav-inner">
+          <div class="segmented-nav">
+            <button type="button" class="nav-item active" id="tabNavPkg" onclick="switchHomeTab('pkg')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
+              </svg>
+              Paket Ujian (12)
+            </button>
+            <button type="button" class="nav-item" id="tabNavHist" onclick="switchHomeTab('hist')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+              </svg>
+              Riwayat Ujian
+            </button>
+            <button type="button" class="nav-item" id="tabNavCheat" onclick="switchHomeTab('cheat')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+              </svg>
+              Ringkasan Materi &amp; Rumus
+            </button>
+            <button type="button" class="nav-item hidden" id="tabNavProfile" onclick="switchHomeTab('profile')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+              Profile Saya
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="cat-stat-divider"></div>
-      <div class="cat-stat-item">
-        <span class="cat-stat-label">Jumlah Soal</span>
-        <span class="cat-stat-val" id="statHdrTotal">110</span>
+
+      <div id="homeContentWrap" class="home-content-wrap">
+        <div id="examRecoveryBanner" class="recovery-banner hidden"></div>
+        <div id="userWelcomeBanner" class="user-strip" style="display:none;"></div>
+
+        <div id="homeTabPkg">
+          <div id="personalSummaryBar" class="summary-bar-grid"></div>
+          <div class="pkg-controls-bar">
+            <div id="pkgFilterPills" class="filter-pills"></div>
+            <div class="pkg-search-wrap">
+              <input type="search" id="pkgSearchInput" class="pkg-search-input"
+                placeholder="Cari paket, subtes, atau topik..." oninput="setPackageSearch(this.value)">
+              <button type="button" id="btnClearPkgSearch" class="btn-clear-search hidden"
+                onclick="setPackageSearch(''); document.getElementById('pkgSearchInput').value='';"
+                title="Hapus pencarian">&times;</button>
+            </div>
+          </div>
+          <div class="package-grid" id="packageList"></div>
+        </div>
+
+        <div id="homeTabCheat" class="hidden">
+          <div class="panel-card" style="margin-bottom:18px;">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+              <div>
+                <span class="badge-tag-blue">MODUL RESMI CPNS 2027</span>
+                <h2 style="font-size:1.25rem; font-weight:800; color:var(--text-primary); margin:6px 0 2px 0;">Modul
+                  Materi Belajar &amp; Rumus Cepat CASN</h2>
+                <p style="font-size:0.86rem; color:var(--text-secondary); margin:0;">Akses Modul PDF Resmi, Rangkuman
+                  Materi SKD &amp; SKB, serta Rumus 15 Detik langsung dari Google Drive.</p>
+              </div>
+            </div>
+            <div
+              style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-top:14px;">
+              <div class="modul-card">
+                <div>
+                  <div class="flex-between-mb8">
+                    <span class="badge-tag-green">JILID 1 • 112 HALAMAN</span>
+                    <span id="materiLockBadge" class="badge-tag-red">TERKUNCI</span>
+                  </div>
+                  <h3 style="font-size:1.02rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;">Kupas
+                    Tuntas Materi SKD TWK, TIU, TKP HOTS CPNS 2027</h3>
+                  <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.45; margin:0 0 14px 0;">
+                    Master materi hafalan UUD 1945, Pilar Negara, Trik Penalaran Aljabar TIU, dan Analisis Kasus TKP
+                    BerAKHLAK skor 5 terverifikasi.
+                  </p>
+                </div>
+                <button type="button" class="btn btn-primary btn-block-action" onclick="openModulFile(1)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                  </svg>
+                  Buka Modul Jilid 1 (Google Drive)
+                </button>
+              </div>
+              <div class="modul-card">
+                <div>
+                  <div class="flex-between-mb8">
+                    <span class="badge-tag-green">JILID 2 • 156 HALAMAN</span>
+                    <span class="badge-tag-blue">UPDATE TERBARU</span>
+                  </div>
+                  <h3 style="font-size:1.02rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;">Rumus
+                    Cepat 15 Detik &amp; Evaluasi FR One Shoot</h3>
+                  <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.45; margin:0 0 14px 0;">
+                    Kompilasi rumus hitung cepat TIU (P-Q, X-Y, Kotak Angka 3x3), silogisme, serta pola figural SVG
+                    langsung dari pengalaman lolos CASN.
+                  </p>
+                </div>
+                <button type="button" class="btn btn-primary btn-block-action" onclick="openModulFile(2)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                  </svg>
+                  Buka Modul Jilid 2 (Google Drive)
+                </button>
+              </div>
+            </div>
+            <div style="text-align:center; margin-top:16px;">
+              <button type="button" class="btn btn-outline" onclick="openGoogleDriveFolder()"
+                style="border-color:#0284c7; color:#0284c7; font-weight:700; padding:8px 20px; font-size:0.84rem; border-radius:8px;">
+                Akses Seluruh Folder Google Drive Modul Lengkap
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h2 style="font-size:1.15rem; font-weight:600; margin-bottom:14px;">Ringkasan Materi &amp; Rumus Kunci SKD
+              CPNS 2027 (TWK, TIU &amp; TKP)</h2>
+            <h3 class="cheat-heading">1. Rumus Cepat TIU &amp; Bocoran Kedinasan 2026 / CPNS 2027 (Target &lt; 15 Detik)
+            </h3>
+            <table class="cheat-table">
+              <tr>
+                <th style="width:30%;">Tipe Soal FR SKD</th>
+                <th>Rumus / Pola Kunci</th>
+              </tr>
+              <tr>
+                <td><strong>Kotak Angka 3 &times; 3 &amp; Segitiga Angka</strong></td>
+                <td>Uji rasio baris/kolom (<code>&times;2</code>, <code>+k</code>), operasi silang
+                  <code>(Kolom 1 &times; Kolom 2) &plusmn; c = Kolom 3</code>, atau selisih kuadrat
+                  <code>(b + a)(b &minus; a)</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>Operator Simbol Baru (a &otimes; b)</strong></td>
+                <td>Ikuti definisi posisi kiri (<code>a</code>) dan kanan (<code>b</code>) secara presisi; kerjakan
+                  bagian di dalam tanda kurung terlebih dahulu.</td>
+              </tr>
+              <tr>
+                <td><strong>Proyek Terhenti Mendadak</strong></td>
+                <td><code>Tambahan Pekerja = (Pekerja Awal &times; Hari Libur) / Sisa Hari Kerja</code></td>
+              </tr>
+              <tr>
+                <td><strong>Kerja Bersama 2 Orang (A &amp; B)</strong></td>
+                <td><code>Waktu Gabungan = (A &times; B) / (A + B)</code></td>
+              </tr>
+              <tr>
+                <td><strong>Ekuivalensi &amp; Negasi Implikasi</strong></td>
+                <td><code>P &rarr; Q &equiv; ~Q &rarr; ~P &equiv; ~P &or; Q</code> &nbsp;|&nbsp;
+                  <code>~(P &rarr; Q) &equiv; P &and; ~Q</code></td>
+              </tr>
+              <tr>
+                <td><strong>Susul-Menyusul &amp; Berpapasan</strong></td>
+                <td>Susul: <code>t = &Delta;S / (V2 &minus; V1)</code> &nbsp;|&nbsp; Papasan:
+                  <code>t = S_total / (V1 + V2)</code></td>
+              </tr>
+              <tr>
+                <td><strong>Pecahan Istimewa Wajib Hafal</strong></td>
+                <td>
+                  <code>1/8 = 12,5% | 3/8 = 37,5% | 5/8 = 62,5% | 7/8 = 87,5% | 1/6 = 16,67% | 1/3 = 33&frac13;% | 5/6 = 83&frac13;%</code>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Selisih Kuadrat &amp; Resiprokal</strong></td>
+                <td><code>a&sup2; &minus; b&sup2; = (a + b)(a &minus; b)</code> &nbsp;|&nbsp; Jika
+                  <code>x + 1/x = k</code> maka <code>x&sup2; + 1/x&sup2; = k&sup2; &minus; 2</code></td>
+              </tr>
+            </table>
+            <h3 class="cheat-heading">2. Pembeda Kunci TWK: Sila ke-2 vs Sila ke-5 Pancasila</h3>
+            <table class="cheat-table">
+              <tr>
+                <th style="width:30%;">Sila Pancasila</th>
+                <th>Kata Kunci Pengunci Kasus</th>
+              </tr>
+              <tr>
+                <td><strong>Sila ke-2 (Kemanusiaan)</strong></td>
+                <td>Relasi personal antarmanusia, empati bencana darurat, kesetaraan martabat/HAM individu,
+                  anti-perundungan, kesopanan.</td>
+              </tr>
+              <tr>
+                <td><strong>Sila ke-5 (Keadilan Sosial)</strong></td>
+                <td>Kesejahteraan publik luas, fasilitas umum, hak &amp; kewajiban warga, menghargai karya orang lain
+                  (anti-plagiarisme), hidup hemat/tidak boros, kemandirian ekonomi.</td>
+              </tr>
+            </table>
+            <h3 class="cheat-heading">3. Panduan Trik &amp; Kunci Jawaban TKP Skor 5 (Passing Grade BKN: 166 / 225)</h3>
+            <table class="cheat-table">
+              <tr>
+                <th style="width:28%;">Pilar Utama TKP (KepmenPAN-RB)</th>
+                <th>Indikator Utama Skor 5 (Pilihan Terbaik)</th>
+              </tr>
+              <tr>
+                <td><strong>Pelayanan Publik</strong></td>
+                <td>Utamakan kepuasan masyarakat/pengguna layanan, tidak birokratis/berbelit, ramah, solutif,
+                  transparan, dan tidak pernah membeda-bedakan latar belakang warga.</td>
+              </tr>
+              <tr>
+                <td><strong>Jejaring Kerja (Kolaborasi)</strong></td>
+                <td>Mau terbuka berbagi informasi &amp; keahlian, bersinergi aktif lintas unit/instansi, mengutamakan
+                  pencapaian target tim di atas ego pribadi.</td>
+              </tr>
+              <tr>
+                <td><strong>Sosial Budaya &amp; Toleransi</strong></td>
+                <td>Sikap adaptif terhadap keberagaman suku, agama, dan budaya di lingkungan kerja; memiliki empati
+                  sosial tinggi serta mampu meredakan gesekan sosial secara damai.</td>
+              </tr>
+              <tr>
+                <td><strong>Teknologi Informasi &amp; Komunikasi</strong></td>
+                <td>Antusias terhadap digitalisasi dan otomasi kerja; proaktif mempelajari sistem/aplikasi baru dan
+                  memanfaatkannya demi efisiensi birokrasi pemerintahan.</td>
+              </tr>
+              <tr>
+                <td><strong>Profesionalisme Kerja</strong></td>
+                <td>Tuntas menjalankan tugas sesuai tupoksi &amp; SOP kedinasan; berintegritas tinggi, disiplin waktu,
+                  dan memisahkan urusan personal dari tanggung jawab kantor.</td>
+              </tr>
+              <tr>
+                <td><strong>Anti Radikalisme</strong></td>
+                <td>Setia seutuhnya pada Pancasila, UUD 1945, dan NKRI; peka mendeteksi dini paham ekstremisme, menolak
+                  intoleransi, serta berani mengambil sikap tegas sesuai regulasi.</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div id="homeTabHist" class="hidden">
+          <div class="panel-card">
+            <div class="flex-between" style="margin-bottom:14px;">
+              <div>
+                <h2 style="font-size:1.15rem; font-weight:700;">Riwayat Hasil Simulasi &amp; Review Pembahasan</h2>
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">Seluruh skor, rincian subtes,
+                  status passing grade, dan jawaban soal tersimpan aman di peramban.</p>
+              </div>
+              <button type="button" class="btn btn-outline" onclick="clearHistory()">Hapus Riwayat</button>
+            </div>
+            <div id="historySummaryBar" class="summary-bar-grid hidden"></div>
+            <div id="historyScopeToggle" style="margin-bottom:14px;"></div>
+            <div id="historyContainer"></div>
+          </div>
+        </div>
+
+        <div id="homeTabProfile" class="hidden">
+          <div id="profileViewContent"></div>
+        </div>
       </div>
-      <div class="cat-stat-divider"></div>
-      <div class="cat-stat-item">
-        <span class="cat-stat-label">Dijawab</span>
-        <span class="cat-stat-val c-ans" id="statHdrAns">0</span>
+
+      <section id="sectionTimelinePengadaan" class="timeline-section">
+        <div class="section-heading-center">
+          <h2>PAKET SOAL PENUH CAT</h2>
+          <div class="section-heading-bar"></div>
+        </div>
+        <div id="timelineTrackPills" class="timeline-track-pills"></div>
+        <div id="timelineBoardContainer" class="timeline-board-card"></div>
+      </section>
+
+      <section id="sectionFaqPanduan" class="faq-section">
+        <div class="section-heading-center">
+          <h2>DASAR HUKUM &amp; PANDUAN RINGKAS</h2>
+          <div class="section-heading-bar"></div>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-q">Dasar Hukum Passing Grade SKD</div>
+            <div class="faq-a">Mengacu pada KepmenPANRB Nomor 321 Tahun 2024: TWK minimal 65, TIU minimal 80, dan TKP
+              minimal 166 (total maksimal 550) dengan pemutus seri prioritas TKP &rarr; TIU &rarr; TWK.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Protokol Karantina &amp; Keamanan CAT</div>
+            <div class="faq-a">Mode Simulasi CAT BKN mengaktifkan layar penuh, kamera pengawas, timer wall-clock tahan
+              refresh, serta proteksi anti-salin, anti-klik kanan, dan privasi layar otomatis.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Buku Petunjuk Singkat Peserta</div>
+            <div class="faq-a">Daftar / masuk akun untuk mengisolasi progres per peserta, pilih paket SKD atau SKB,
+              kerjakan dengan pintasan A&ndash;E / R / panah, lalu tinjau pembahasan rumus cepat &lt;15 detik.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="screenExam" class="hidden">
+      <div id="proctorWarningBanner" class="proctor-warn-banner hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10h2v4h-2zm0 6h2v2h-2z" />
+        </svg>
+        <span id="proctorWarningBannerText">Peringatan Pengawas: Wajah tidak terdeteksi!</span>
       </div>
-      <div class="cat-stat-divider"></div>
-      <div class="cat-stat-item">
-        <span class="cat-stat-label">Ragu</span>
-        <span class="cat-stat-val c-doubt" id="statHdrDoubt">0</span>
-      </div>
-      <div class="cat-stat-divider"></div>
-      <div class="cat-stat-item">
-        <span class="cat-stat-label">Belum</span>
-        <span class="cat-stat-val c-empty" id="statHdrEmpty">110</span>
+      <div id="examGrid" class="exam-grid">
+        <div class="panel-card" id="qMainPanel">
+          <div id="examWatermarkLayer" class="exam-watermark-layer hidden" aria-hidden="true"></div>
+          <div class="q-topbar">
+            <div class="q-meta-left">
+              <span class="q-counter" id="qCounterText">Soal Nomor 1</span>
+              <span class="q-tag" id="qCategoryBadge">TWK</span>
+              <span class="q-subtopic" id="qSubtopicText"></span>
+            </div>
+            <div class="flex-gap8">
+              <div class="font-scaler" role="group" aria-label="Ukuran Teks Soal">
+                <button type="button" id="btnFontDec" class="btn-font-scale" onclick="adjustFontSize(-1)"
+                  title="Perkecil Teks">A-</button>
+                <button type="button" id="btnFontReset" class="btn-font-scale is-active" onclick="adjustFontSize(0)"
+                  title="Ukuran Normal">A</button>
+                <button type="button" id="btnFontInc" class="btn-font-scale" onclick="adjustFontSize(1)"
+                  title="Perbesar Teks">A+</button>
+              </div>
+              <button type="button" id="btnToggleExplain" class="btn btn-secondary" onclick="revealCurrentExplanation()"
+                style="font-size:0.8rem; padding:5px 12px;">Lihat Pembahasan</button>
+            </div>
+          </div>
+          <div class="q-content-scroll" id="qContentScroll">
+            <div class="q-stem" id="qStemContainer"></div>
+            <div class="options-group" id="qOptionsContainer"></div>
+            <div id="qExplainContainer" class="explain-card hidden"></div>
+          </div>
+          <div class="q-toolbar">
+            <div class="toolbar-left">
+              <button type="button" class="btn btn-nav" id="btnPrev" onclick="prevQuestion()"
+                style="font-size:0.84rem; padding:6px 14px;">&lsaquo; Soal Sebelumnya</button>
+            </div>
+            <div class="toolbar-center">
+              <button type="button" class="btn btn-doubt-toggle" id="btnDoubt"
+                onclick="toggleDoubt()">Ragu-Ragu</button>
+              <button type="button" id="btnClearAns" class="btn btn-outline" onclick="clearAnswer()"
+                style="font-size:0.84rem; padding:6px 14px;">Kosongkan</button>
+            </div>
+            <div class="toolbar-right">
+              <button type="button" class="btn btn-nav" id="btnNext" onclick="nextQuestion()"
+                style="font-size:0.84rem; padding:6px 16px;">Soal Berikutnya &rsaquo;</button>
+            </div>
+          </div>
+          <div id="examShortcutHint" class="exam-shortcut-hint">
+            <span>Pintasan Keyboard:</span>
+            <span><kbd>A</kbd>&ndash;<kbd>E</kbd> Pilih Jawaban</span>
+            <span><kbd>R</kbd> Ragu-Ragu</span>
+            <span><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> Soal Sebelum/Berikutnya</span>
+          </div>
+        </div>
+
+        <div id="examSidebarCol" class="exam-sidebar">
+          <div id="proctorCard" class="proctor-box">
+            <div class="proctor-header">
+              <span class="proctor-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V6z" />
+                  <path
+                    d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                </svg>
+                Kamera Pengawas CAT
+              </span>
+              <span id="proctorStatusBadge" class="proctor-badge">
+                <span class="proctor-dot"></span>
+                <span id="proctorStatusText">LIVE PENGAWAS</span>
+              </span>
+            </div>
+            <div class="proctor-video-wrap">
+              <video id="proctorVideo" class="proctor-video hidden" autoplay playsinline muted></video>
+              <div id="proctorTargetOverlay" class="proctor-target-overlay hidden">
+                <div class="target-reticle"></div>
+              </div>
+              <div id="proctorPlaceholder" class="proctor-placeholder">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6;">
+                  <path
+                    d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+                </svg>
+                <span>Kamera aktif...</span>
+              </div>
+            </div>
+            <div class="proctor-caption">
+              <span>Sesi: CASN 2027</span>
+              <span id="proctorViolationsBadge" style="font-weight:600; color:#dc2626;">0 Pelanggaran</span>
+            </div>
+          </div>
+
+          <div class="panel-card nav-soal-card" id="navSoalCard">
+            <div
+              style="font-size:0.74rem; color:var(--text-secondary); padding-bottom:8px; margin-bottom:8px; border-bottom:1px solid var(--border-color);">
+              <div style="font-weight:700; color:var(--text-primary);" id="examSideNama">-</div>
+              <div style="display:flex; justify-content:space-between; gap:6px;">
+                <span>No: <strong id="examSideNo">-</strong></span>
+                <span id="examSidePaket"
+                  style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:145px;">-</span>
+              </div>
+            </div>
+            <div class="nav-panel-title">
+              <span>Navigasi Soal</span>
+              <span id="gridProgressText" style="font-size:0.72rem; font-weight:600; color:var(--text-muted);">0 / 110
+                Dijawab</span>
+            </div>
+            <div id="subtestJumpBar" class="subtest-jump-bar hidden"></div>
+            <div class="legend-row">
+              <div class="legend-item"><span class="legend-sq sq-ans"></span> Dijawab (<span id="lgAnsCount">0</span>)
+              </div>
+              <div class="legend-item"><span class="legend-sq sq-doubt"></span> Ragu (<span id="lgDbtCount">0</span>)
+              </div>
+              <div class="legend-item"><span class="legend-sq sq-empty"></span> Belum (<span id="lgEmpCount">110</span>)
+              </div>
+            </div>
+            <button type="button" id="btnToggleGridMobile" class="btn-grid-toggle"
+              onclick="toggleMobileGrid()">Sembunyikan Peta Soal</button>
+            <div class="grid-numbers" id="numGrid"></div>
+            <button type="button" id="btnSidebarFinish" class="btn btn-finish-sidebar"
+              onclick="openFinishModal()">Selesai Ujian</button>
+            <button type="button" id="btnSidebarBackHistory" class="btn btn-primary btn-block-action hidden"
+              onclick="exitReviewToHistory()">Kembali ke Riwayat</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-      <div id="examTimerWrapper" class="timer-wrapper hidden">
-        <div class="timer-col">
-          <span class="timer-num" id="timerHours">01</span>
-          <span class="timer-sub">JAM</span>
-        </div>
-        <span class="timer-sep">:</span>
-        <div class="timer-col">
-          <span class="timer-num" id="timerMinutes">39</span>
-          <span class="timer-sub">MENIT</span>
-        </div>
-        <span class="timer-sep">:</span>
-        <div class="timer-col">
-          <span class="timer-num" id="timerSeconds">50</span>
-          <span class="timer-sub">DETIK</span>
-        </div>
-      </div>
-      <button type="button" id="btnHdrFinish" class="btn btn-primary hidden" onclick="openFinishModal()">Selesai Ujian</button>
-      <button type="button" id="btnHdrMenu" class="btn btn-ghost-dark hidden" onclick="showScreen('home')">Menu Paket</button>
-      <button type="button" id="btnHdrUserWidget" class="btn hdr-login-btn" onclick="handleHeaderUserClick()">Masuk / Daftar</button>
-      <button type="button" id="btnHdrDonasi" class="btn btn-ghost-dark" onclick="openDonationModal()">Donasi</button>
-      <button type="button" id="btnHdrTheme" class="btn-icon" onclick="toggleTheme()" title="Ubah Tema Tampilan">
-        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9 4.97 0 9-4.03 9-9 0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
-      </button>
-    </div>
-  </div>
-</header>
 
-<div class="main-container">
-  <div id="screenHome">
-    <div id="examRecoveryBanner" class="recovery-banner hidden"></div>
-    <div id="userWelcomeBanner" class="user-strip" style="display:none;"></div>
-
-    <section id="homeHeroSection" class="landing-hero">
-      <span class="hero-tag">STANDAR CAT BKN &bull; KEPMENPANRB NO. 321/2024 &bull; 610 SOAL TERKURASI</span>
-      <h1 class="hero-title">Portal Simulasi CAT CPNS 2027 &amp; Evaluasi Passing Grade</h1>
-      <p class="hero-subtitle">
-        Berlatih dalam antarmuka otentik CAT BKN lengkap dengan 110 soal SKD (100 menit), timer wall-clock anti-drift, auto-save pemulihan sesi, pengawasan kamera proctor, pembahasan rumus cepat &lt;15 detik, dan bank soal SKB Teknis.
-      </p>
-      <div class="hero-actions">
-        <button type="button" class="btn btn-primary" onclick="openPrepModal('skd_hots')">Mulai Tryout SKD Utama (110 Soal)</button>
-        <button type="button" id="heroAuthCtaBtn" class="btn btn-ghost-dark" onclick="openAuthModal()">Daftar / Masuk Peserta</button>
-        <button type="button" class="btn btn-ghost-dark" onclick="switchHomeTab('cheat')">Ringkasan Materi &amp; Rumus Cepat</button>
-      </div>
-      <div class="pg-infographic hero-pg-strip">
-        <div class="pg-card">
-          <div class="pg-card-subtest">TWK (30 Soal)</div>
-          <div class="pg-card-threshold">&ge; 65</div>
-          <div class="pg-card-desc">Maks. 150 • Benar +5, Salah 0</div>
-        </div>
-        <div class="pg-card">
-          <div class="pg-card-subtest">TIU (35 Soal)</div>
-          <div class="pg-card-threshold">&ge; 80</div>
-          <div class="pg-card-desc">Maks. 175 • Benar +5, Salah 0</div>
-        </div>
-        <div class="pg-card">
-          <div class="pg-card-subtest">TKP (45 Soal)</div>
-          <div class="pg-card-threshold">&ge; 166</div>
-          <div class="pg-card-desc">Maks. 225 • Skala 1–5 BerAKHLAK</div>
-        </div>
-        <div class="pg-card">
-          <div class="pg-card-subtest">Target 3x Formasi</div>
-          <div class="pg-card-threshold">&ge; 430</div>
-          <div class="pg-card-desc">Maks. 550 • Tie-Breaker: TKP&rarr;TIU&rarr;TWK</div>
-        </div>
-      </div>
-    </section>
-
-    <div id="personalSummaryBar" class="summary-bar-grid"></div>
-
-    <div class="segmented-nav">
-      <button type="button" class="nav-item active" id="tabNavPkg" onclick="switchHomeTab('pkg')">Paket Ujian (12)</button>
-      <button type="button" class="nav-item" id="tabNavCheat" onclick="switchHomeTab('cheat')">Ringkasan Materi &amp; Rumus</button>
-      <button type="button" class="nav-item" id="tabNavHist" onclick="switchHomeTab('hist')">Riwayat Ujian</button>
-    </div>
-
-    <div id="homeTabPkg">
-      <div class="pkg-controls-bar">
-        <div id="pkgFilterPills" class="filter-pills"></div>
-        <div class="pkg-search-wrap">
-          <input type="search" id="pkgSearchInput" class="pkg-search-input" placeholder="Cari paket, subtes, atau topik..." oninput="setPackageSearch(this.value)">
-          <button type="button" id="btnClearPkgSearch" class="btn-clear-search hidden" onclick="setPackageSearch(''); document.getElementById('pkgSearchInput').value='';" title="Hapus pencarian">&times;</button>
-        </div>
-      </div>
-      <div class="package-grid" id="packageList"></div>
-    </div>
-
-    <div id="homeTabCheat" class="hidden">
-      <div class="panel-card" style="margin-bottom:18px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+    <div id="screenResult" class="hidden">
+      <div class="result-card">
+        <div class="result-header">
           <div>
-            <span class="badge-tag-blue">MODUL RESMI CPNS 2027</span>
-            <h2 style="font-size:1.25rem; font-weight:800; color:var(--text-primary); margin:6px 0 2px 0;">Modul Materi Belajar &amp; Rumus Cepat CASN</h2>
-            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0;">Akses Modul PDF Resmi, Rangkuman Materi SKD &amp; SKB, serta Rumus 15 Detik langsung dari Google Drive.</p>
+            <h2 style="font-size:1.25rem; font-weight:700; color:var(--text-primary);" id="resTitle">Hasil Evaluasi
+              Ujian CAT</h2>
+            <p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;" id="resSubtitle"></p>
+          </div>
+          <div class="flex-gap8" style="flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary" onclick="reviewExam(false)">Pembahasan Semua Soal</button>
+            <button type="button" class="btn btn-secondary" onclick="reviewExam(true)">Pembahasan Soal Salah
+              Saja</button>
+            <button type="button" class="btn btn-outline" onclick="showScreen('home')">Kembali ke Menu</button>
           </div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-top:14px;">
-          <div class="modul-card">
-            <div>
-              <div class="flex-between-mb8">
-                <span class="badge-tag-green">JILID 1 • 112 HALAMAN</span>
-                <span id="materiLockBadge" class="badge-tag-red">TERKUNCI</span>
-              </div>
-              <h3 style="font-size:1.02rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;">Kupas Tuntas Materi SKD TWK, TIU, TKP HOTS CPNS 2027</h3>
-              <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.45; margin:0 0 14px 0;">
-                Master materi hafalan UUD 1945, Pilar Negara, Trik Penalaran Aljabar TIU, dan Analisis Kasus TKP BerAKHLAK skor 5 terverifikasi.
-              </p>
-            </div>
-            <button type="button" class="btn btn-primary btn-block-action" onclick="openModulFile(1)">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-              Buka Modul Jilid 1 (Google Drive)
-            </button>
+        <div id="resVerdictBox"></div>
+        <div class="integrity-card" id="resIntegrityCard">
+          <div>
+            <div
+              style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px;">
+              Audit Integritas &amp; Pengawasan Ujian</div>
+            <div style="font-size:0.95rem; font-weight:600; color:var(--text-primary);" id="integritySummaryText">
+              Seluruh sesi diselesaikan dalam kepatuhan protokol penuh.</div>
           </div>
-          <div class="modul-card">
-            <div>
-              <div class="flex-between-mb8">
-                <span class="badge-tag-green">JILID 2 • 156 HALAMAN</span>
-                <span class="badge-tag-blue">UPDATE TERBARU</span>
-              </div>
-              <h3 style="font-size:1.02rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;">Rumus Cepat 15 Detik &amp; Evaluasi FR One Shoot</h3>
-              <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.45; margin:0 0 14px 0;">
-                Kompilasi rumus hitung cepat TIU (P-Q, X-Y, Kotak Angka 3x3), silogisme, serta pola figural SVG langsung dari pengalaman lolos CASN.
-              </p>
-            </div>
-            <button type="button" class="btn btn-primary btn-block-action" onclick="openModulFile(2)">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-              Buka Modul Jilid 2 (Google Drive)
-            </button>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span class="integrity-badge clean" id="integrityBadgeStatus">PROKTIK INTEGRITAS BERSIH</span>
           </div>
         </div>
-        <div style="text-align:center; margin-top:16px;">
-          <button type="button" class="btn btn-outline" onclick="openGoogleDriveFolder()" style="border-color:#0284c7; color:#0284c7; font-weight:700; padding:8px 20px; font-size:0.84rem; border-radius:8px;">
-            Akses Seluruh Folder Google Drive Modul Lengkap
+        <div class="score-grid" id="resScoreTiles"></div>
+        <div id="resTieBreakerBox" class="tiebreaker-box hidden"></div>
+        <div
+          style="display:flex; justify-content:center; gap:12px; margin-top:24px; padding-top:16px; border-top:1px solid var(--border-color); flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary" onclick="showScreen('home'); switchHomeTab('hist');"
+            style="padding:10px 22px; font-weight:700; font-size:0.9rem; border-radius:8px;">
+            Lihat Riwayat Ujian
+          </button>
+          <button type="button" class="btn btn-outline" onclick="openUserProfileModal()"
+            style="border-color:#0284c7; color:#0284c7; padding:10px 20px; font-weight:700; font-size:0.9rem; border-radius:8px;">
+            Cetak Kartu Ujian (A4)
+          </button>
+          <button type="button" class="btn btn-outline" onclick="openDonationModal()"
+            style="border-color:#0284c7; color:#0284c7; padding:10px 18px; font-weight:700; font-size:0.9rem; border-radius:8px;">
+            Dukungan QRIS
           </button>
         </div>
       </div>
-
-      <div class="panel-card">
-        <h2 style="font-size:1.15rem; font-weight:600; margin-bottom:14px;">Ringkasan Materi &amp; Rumus Kunci SKD CPNS 2027 (TWK, TIU &amp; TKP)</h2>
-        <h3 class="cheat-heading">1. Rumus Cepat TIU &amp; Bocoran Kedinasan 2026 / CPNS 2027 (Target &lt; 15 Detik)</h3>
-        <table class="cheat-table">
-          <tr><th style="width:30%;">Tipe Soal FR SKD</th><th>Rumus / Pola Kunci</th></tr>
-          <tr><td><strong>Kotak Angka 3 &times; 3 &amp; Segitiga Angka</strong></td><td>Uji rasio baris/kolom (<code>&times;2</code>, <code>+k</code>), operasi silang <code>(Kolom 1 &times; Kolom 2) &plusmn; c = Kolom 3</code>, atau selisih kuadrat <code>(b + a)(b &minus; a)</code>.</td></tr>
-          <tr><td><strong>Operator Simbol Baru (a &otimes; b)</strong></td><td>Ikuti definisi posisi kiri (<code>a</code>) dan kanan (<code>b</code>) secara presisi; kerjakan bagian di dalam tanda kurung terlebih dahulu.</td></tr>
-          <tr><td><strong>Proyek Terhenti Mendadak</strong></td><td><code>Tambahan Pekerja = (Pekerja Awal &times; Hari Libur) / Sisa Hari Kerja</code></td></tr>
-          <tr><td><strong>Kerja Bersama 2 Orang (A &amp; B)</strong></td><td><code>Waktu Gabungan = (A &times; B) / (A + B)</code></td></tr>
-          <tr><td><strong>Ekuivalensi &amp; Negasi Implikasi</strong></td><td><code>P &rarr; Q &equiv; ~Q &rarr; ~P &equiv; ~P &or; Q</code> &nbsp;|&nbsp; <code>~(P &rarr; Q) &equiv; P &and; ~Q</code></td></tr>
-          <tr><td><strong>Susul-Menyusul &amp; Berpapasan</strong></td><td>Susul: <code>t = &Delta;S / (V2 &minus; V1)</code> &nbsp;|&nbsp; Papasan: <code>t = S_total / (V1 + V2)</code></td></tr>
-          <tr><td><strong>Pecahan Istimewa Wajib Hafal</strong></td><td><code>1/8 = 12,5% | 3/8 = 37,5% | 5/8 = 62,5% | 7/8 = 87,5% | 1/6 = 16,67% | 1/3 = 33&frac13;% | 5/6 = 83&frac13;%</code></td></tr>
-          <tr><td><strong>Selisih Kuadrat &amp; Resiprokal</strong></td><td><code>a&sup2; &minus; b&sup2; = (a + b)(a &minus; b)</code> &nbsp;|&nbsp; Jika <code>x + 1/x = k</code> maka <code>x&sup2; + 1/x&sup2; = k&sup2; &minus; 2</code></td></tr>
-        </table>
-        <h3 class="cheat-heading">2. Pembeda Kunci TWK: Sila ke-2 vs Sila ke-5 Pancasila</h3>
-        <table class="cheat-table">
-          <tr><th style="width:30%;">Sila Pancasila</th><th>Kata Kunci Pengunci Kasus</th></tr>
-          <tr><td><strong>Sila ke-2 (Kemanusiaan)</strong></td><td>Relasi personal antarmanusia, empati bencana darurat, kesetaraan martabat/HAM individu, anti-perundungan, kesopanan.</td></tr>
-          <tr><td><strong>Sila ke-5 (Keadilan Sosial)</strong></td><td>Kesejahteraan publik luas, fasilitas umum, hak &amp; kewajiban warga, menghargai karya orang lain (anti-plagiarisme), hidup hemat/tidak boros, kemandirian ekonomi.</td></tr>
-        </table>
-        <h3 class="cheat-heading">3. Panduan Trik &amp; Kunci Jawaban TKP Skor 5 (Passing Grade BKN: 166 / 225)</h3>
-        <table class="cheat-table">
-          <tr><th style="width:28%;">Pilar Utama TKP (KepmenPAN-RB)</th><th>Indikator Utama Skor 5 (Pilihan Terbaik)</th></tr>
-          <tr><td><strong>Pelayanan Publik</strong></td><td>Utamakan kepuasan masyarakat/pengguna layanan, tidak birokratis/berbelit, ramah, solutif, transparan, dan tidak pernah membeda-bedakan latar belakang warga.</td></tr>
-          <tr><td><strong>Jejaring Kerja (Kolaborasi)</strong></td><td>Mau terbuka berbagi informasi &amp; keahlian, bersinergi aktif lintas unit/instansi, mengutamakan pencapaian target tim di atas ego pribadi.</td></tr>
-          <tr><td><strong>Sosial Budaya &amp; Toleransi</strong></td><td>Sikap adaptif terhadap keberagaman suku, agama, dan budaya di lingkungan kerja; memiliki empati sosial tinggi serta mampu meredakan gesekan sosial secara damai.</td></tr>
-          <tr><td><strong>Teknologi Informasi &amp; Komunikasi</strong></td><td>Antusias terhadap digitalisasi dan otomasi kerja; proaktif mempelajari sistem/aplikasi baru dan memanfaatkannya demi efisiensi birokrasi pemerintahan.</td></tr>
-          <tr><td><strong>Profesionalisme Kerja</strong></td><td>Tuntas menjalankan tugas sesuai tupoksi &amp; SOP kedinasan; berintegritas tinggi, disiplin waktu, dan memisahkan urusan personal dari tanggung jawab kantor.</td></tr>
-          <tr><td><strong>Anti Radikalisme</strong></td><td>Setia seutuhnya pada Pancasila, UUD 1945, dan NKRI; peka mendeteksi dini paham ekstremisme, menolak intoleransi, serta berani mengambil sikap tegas sesuai regulasi.</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div id="homeTabHist" class="hidden">
-      <div class="panel-card">
-        <div class="flex-between" style="margin-bottom:14px;">
-          <div>
-            <h2 style="font-size:1.15rem; font-weight:700;">Riwayat Hasil Simulasi &amp; Review Pembahasan</h2>
-            <p style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">Seluruh skor, rincian subtes, status passing grade, dan jawaban soal tersimpan aman di peramban.</p>
-          </div>
-          <button type="button" class="btn btn-outline" onclick="clearHistory()">Hapus Riwayat</button>
-        </div>
-        <div id="historySummaryBar" class="summary-bar-grid hidden"></div>
-        <div id="historyScopeToggle" style="margin-bottom:14px;"></div>
-        <div id="historyContainer"></div>
-      </div>
     </div>
   </div>
 
-  <div id="screenExam" class="hidden">
-    <div id="proctorWarningBanner" class="proctor-warn-banner hidden">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10h2v4h-2zm0 6h2v2h-2z"/>
+  <footer id="siteFooter" class="site-footer">
+    <div class="footer-main-grid">
+      <div class="footer-brand-col">
+        <div class="footer-emblem-lockup">
+          <svg width="46" height="46" viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="11" r="3" fill="#e11d48" />
+            <circle cx="24" cy="24" r="3.2" fill="#1481c6" />
+            <path d="M12 10c4 4 6 9 6 14s-2 10-6 14M36 10c-4 4-6 9-6 14s2 10 6 14" stroke="#94a3b8" stroke-width="2.6"
+              fill="none" stroke-linecap="round" />
+            <path d="M16 7c3 5 6 10 8 17 2-7 5-12 8-17" stroke="#e11d48" stroke-width="2.8" fill="none"
+              stroke-linecap="round" />
+            <path d="M8 31c6-5 12-7 16-7s10 2 16 7" stroke="#1481c6" stroke-width="3" fill="none"
+              stroke-linecap="round" />
+          </svg>
+          <div class="footer-emblem-text">CAT BKN<br><span
+              style="font-size:0.74rem; font-weight:700; color:#1481c6; letter-spacing:0.4px;">SIMULASI CPNS 2027</span>
+          </div>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5; margin-top:4px;">
+          Portal simulasi latihan mandiri CAT CPNS &amp; Kedinasan 2027 dengan desain terinspirasi sistem seleksi
+          nasional.
+        </p>
+      </div>
+
+      <div>
+        <div class="footer-col-heading">Kontak</div>
+        <div class="footer-contact-list">
+          <div class="footer-contact-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+            </svg>
+            <span>0877-8480-0668 (Admin Support)</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+            </svg>
+            <span>MGNIFICMRNA Course &bull; Konsultasi CPNS 2027</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+            </svg>
+            <span>610 Soal Terkurasi &bull; Standar KepmenPANRB 321/2024</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-col-heading">Tautan</div>
+        <div class="footer-links-cols">
+          <button type="button" class="footer-nav-link" onclick="scrollHomeSection('top')">Beranda</button>
+          <button type="button" class="footer-nav-link" onclick="scrollHomeSection('timeline')">Paket Penuh</button>
+          <button type="button" class="footer-nav-link" onclick="openPortalTabOrLogin('pkg')">Portal Paket</button>
+          <button type="button" class="footer-nav-link" onclick="openPortalTabOrLogin('cheat')">Materi &amp;
+            SKB</button>
+          <button type="button" class="footer-nav-link" onclick="openPortalTabOrLogin('hist')">Riwayat Ujian</button>
+          <button type="button" class="footer-nav-link" onclick="openDonationModal()">Dukungan QRIS</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-col-heading">Media Sosial</div>
+        <div class="footer-socials-grid">
+          <a href="https://chat.whatsapp.com/EGjwVUm1Sqg7UIqkfaJlMI" target="_blank" rel="noopener noreferrer"
+            class="social-link" title="Gabung Grup WhatsApp Resmi Persiapan CPNS 2027">
+            <svg viewBox="0 0 24 24" style="fill:#22c55e;">
+              <path
+                d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
+            </svg>
+            <span>Grup WA</span>
+          </a>
+          <a href="https://wa.me/6287784800668?text=Halo%20Admin%20Simulasi%20CAT%20CPNS%202027" target="_blank"
+            rel="noopener noreferrer" class="social-link" title="WhatsApp: 087784800668">
+            <svg viewBox="0 0 24 24" style="fill:#1481c6;">
+              <path
+                d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
+            </svg>
+            <span>Admin WA</span>
+          </a>
+          <a href="https://www.instagram.com/mgnificmrna/" target="_blank" rel="noopener noreferrer" class="social-link"
+            title="Instagram: @mgnificmrna">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+            <span>Instagram</span>
+          </a>
+          <a href="https://www.linkedin.com/in/irkhammaulana/" target="_blank" rel="noopener noreferrer"
+            class="social-link" title="LinkedIn: Irkham Maulana">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+            </svg>
+            <span>LinkedIn</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      2026-2027 &copy; Simulasi CAT CPNS &bull; Created by Irkham Maulana
+    </div>
+    <div id="floatingRobotDonation" class="floating-robot-wrap" onclick="openDonationModal()"
+      title="Bantu kembangkan materi &amp; bank soal seikhlasnya">
+      <div class="robot-speech-bubble">
+        Bantu saya mengembangkan materi &amp; bank soal seikhlasnya! (Donasi kode unik 27) ✨
+      </div>
+      <button type="button" class="robot-btn" aria-label="Buka Donasi &amp; Dukungan Robot">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="10" rx="3" />
+          <circle cx="12" cy="5" r="2" />
+          <path d="M12 7v4" />
+          <line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3" />
+          <line x1="16" y1="15" x2="16.01" y2="15" stroke-width="3" />
+          <path d="M9 18c1 .8 2 1 3 1s2-.2 3-1" />
+          <line x1="1" y1="15" x2="3" y2="15" />
+          <line x1="21" y1="15" x2="23" y2="15" />
+        </svg>
+        <span class="robot-badge-pulse"></span>
+      </button>
+    </div>
+  </footer>
+
+  <div id="a11yFloatingWrap" class="a11y-floating-wrap">
+    <div id="a11yPopoverCard" class="a11y-popover-card hidden">
+      <div
+        style="font-size:0.78rem; font-weight:800; color:var(--sscasn-blue); text-transform:uppercase; margin-bottom:6px;">
+        Menu Aksesibilitas</div>
+      <div class="a11y-row">
+        <span>Tema Tampilan</span>
+        <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:0.76rem;"
+          onclick="toggleTheme()">Gelap / Terang</button>
+      </div>
+      <div class="a11y-row">
+        <span>Ukuran Huruf</span>
+        <button type="button" id="btnA11yFont" class="btn btn-secondary" style="padding:4px 10px; font-size:0.76rem;"
+          onclick="toggleA11yFontScale()">Teks: Normal</button>
+      </div>
+      <div class="a11y-row">
+        <span>Kontras Tinggi</span>
+        <button type="button" id="btnA11yContrast" class="btn btn-secondary"
+          style="padding:4px 10px; font-size:0.76rem;" onclick="toggleHighContrast()">Kontras: Normal</button>
+      </div>
+      <div class="a11y-row" style="border-top:1px solid var(--border-color); margin-top:4px; padding-top:8px;">
+        <span>Dukungan Portal</span>
+        <button type="button" class="btn btn-primary" style="padding:4px 10px; font-size:0.76rem;"
+          onclick="toggleA11yMenu(false); openDonationModal();">Donasi QRIS</button>
+      </div>
+    </div>
+    <button type="button" class="a11y-pill-btn" onclick="toggleA11yMenu()" aria-label="Buka Menu Aksesibilitas">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z" />
       </svg>
-      <span id="proctorWarningBannerText">Peringatan Pengawas: Wajah tidak terdeteksi!</span>
-    </div>
-    <div id="examGrid" class="exam-grid">
-      <div class="panel-card" id="qMainPanel">
-        <div id="examWatermarkLayer" class="exam-watermark-layer hidden" aria-hidden="true"></div>
-        <div class="q-topbar">
-          <div class="q-meta-left">
-            <span class="q-counter" id="qCounterText">Soal Nomor 1</span>
-            <span class="q-tag" id="qCategoryBadge">TWK</span>
-            <span class="q-subtopic" id="qSubtopicText"></span>
-          </div>
-          <div class="flex-gap8">
-            <div class="font-scaler" role="group" aria-label="Ukuran Teks Soal">
-              <button type="button" id="btnFontDec" class="btn-font-scale" onclick="adjustFontSize(-1)" title="Perkecil Teks">A-</button>
-              <button type="button" id="btnFontReset" class="btn-font-scale is-active" onclick="adjustFontSize(0)" title="Ukuran Normal">A</button>
-              <button type="button" id="btnFontInc" class="btn-font-scale" onclick="adjustFontSize(1)" title="Perbesar Teks">A+</button>
-            </div>
-            <button type="button" id="btnToggleExplain" class="btn btn-secondary" onclick="revealCurrentExplanation()" style="font-size:0.8rem; padding:5px 12px;">Lihat Pembahasan</button>
-          </div>
-        </div>
-        <div class="q-content-scroll" id="qContentScroll">
-          <div class="q-stem" id="qStemContainer"></div>
-          <div class="options-group" id="qOptionsContainer"></div>
-          <div id="qExplainContainer" class="explain-card hidden"></div>
-        </div>
-        <div class="q-toolbar">
-          <div class="toolbar-left">
-            <button type="button" class="btn btn-nav" id="btnPrev" onclick="prevQuestion()" style="font-size:0.84rem; padding:6px 14px;">&lsaquo; Soal Sebelumnya</button>
-          </div>
-          <div class="toolbar-center">
-            <button type="button" class="btn btn-doubt-toggle" id="btnDoubt" onclick="toggleDoubt()">Ragu-Ragu</button>
-            <button type="button" id="btnClearAns" class="btn btn-outline" onclick="clearAnswer()" style="font-size:0.84rem; padding:6px 14px;">Kosongkan</button>
-          </div>
-          <div class="toolbar-right">
-            <button type="button" class="btn btn-nav" id="btnNext" onclick="nextQuestion()" style="font-size:0.84rem; padding:6px 16px;">Soal Berikutnya &rsaquo;</button>
-          </div>
-        </div>
-        <div id="examShortcutHint" class="exam-shortcut-hint">
-          <span>Pintasan Keyboard:</span>
-          <span><kbd>A</kbd>&ndash;<kbd>E</kbd> Pilih Jawaban</span>
-          <span><kbd>R</kbd> Ragu-Ragu</span>
-          <span><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> Soal Sebelum/Berikutnya</span>
-        </div>
-      </div>
-
-      <div id="examSidebarCol" class="exam-sidebar">
-        <div id="proctorCard" class="proctor-box">
-          <div class="proctor-header">
-            <span class="proctor-title">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V6z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-              Kamera Pengawas CAT
-            </span>
-            <span id="proctorStatusBadge" class="proctor-badge">
-              <span class="proctor-dot"></span>
-              <span id="proctorStatusText">LIVE PENGAWAS</span>
-            </span>
-          </div>
-          <div class="proctor-video-wrap">
-            <video id="proctorVideo" class="proctor-video hidden" autoplay playsinline muted></video>
-            <div id="proctorTargetOverlay" class="proctor-target-overlay hidden">
-              <div class="target-reticle"></div>
-            </div>
-            <div id="proctorPlaceholder" class="proctor-placeholder">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6;"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-              <span>Kamera aktif...</span>
-            </div>
-          </div>
-          <div class="proctor-caption">
-            <span>Sesi: CASN 2027</span>
-            <span id="proctorViolationsBadge" style="font-weight:600; color:#dc2626;">0 Pelanggaran</span>
-          </div>
-        </div>
-
-        <div class="panel-card nav-soal-card" id="navSoalCard">
-          <div style="font-size:0.74rem; color:var(--text-secondary); padding-bottom:8px; margin-bottom:8px; border-bottom:1px solid var(--border-color);">
-            <div style="font-weight:700; color:var(--text-primary);" id="examSideNama">-</div>
-            <div style="display:flex; justify-content:space-between; gap:6px;">
-              <span>No: <strong id="examSideNo">-</strong></span>
-              <span id="examSidePaket" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:145px;">-</span>
-            </div>
-          </div>
-          <div class="nav-panel-title">
-            <span>Navigasi Soal</span>
-            <span id="gridProgressText" style="font-size:0.72rem; font-weight:600; color:var(--text-muted);">0 / 110 Dijawab</span>
-          </div>
-          <div id="subtestJumpBar" class="subtest-jump-bar hidden"></div>
-          <div class="legend-row">
-            <div class="legend-item"><span class="legend-sq sq-ans"></span> Dijawab (<span id="lgAnsCount">0</span>)</div>
-            <div class="legend-item"><span class="legend-sq sq-doubt"></span> Ragu (<span id="lgDbtCount">0</span>)</div>
-            <div class="legend-item"><span class="legend-sq sq-empty"></span> Belum (<span id="lgEmpCount">110</span>)</div>
-          </div>
-          <button type="button" id="btnToggleGridMobile" class="btn-grid-toggle" onclick="toggleMobileGrid()">Sembunyikan Peta Soal</button>
-          <div class="grid-numbers" id="numGrid"></div>
-          <button type="button" id="btnSidebarFinish" class="btn btn-finish-sidebar" onclick="openFinishModal()">Selesai Ujian</button>
-          <button type="button" id="btnSidebarBackHistory" class="btn btn-primary btn-block-action hidden" onclick="exitReviewToHistory()">Kembali ke Riwayat</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="screenResult" class="hidden">
-    <div class="result-card">
-      <div class="result-header">
-        <div>
-          <h2 style="font-size:1.25rem; font-weight:700; color:var(--text-primary);" id="resTitle">Hasil Evaluasi Ujian CAT</h2>
-          <p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;" id="resSubtitle"></p>
-        </div>
-        <div class="flex-gap8" style="flex-wrap:wrap;">
-          <button type="button" class="btn btn-primary" onclick="reviewExam(false)">Pembahasan Semua Soal</button>
-          <button type="button" class="btn btn-secondary" onclick="reviewExam(true)">Pembahasan Soal Salah Saja</button>
-          <button type="button" class="btn btn-outline" onclick="showScreen('home')">Kembali ke Menu</button>
-        </div>
-      </div>
-      <div id="resVerdictBox"></div>
-      <div class="integrity-card" id="resIntegrityCard">
-        <div>
-          <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px;">Audit Integritas &amp; Pengawasan Ujian</div>
-          <div style="font-size:0.95rem; font-weight:600; color:var(--text-primary);" id="integritySummaryText">Seluruh sesi diselesaikan dalam kepatuhan protokol penuh.</div>
-        </div>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <span class="integrity-badge clean" id="integrityBadgeStatus">PROKTIK INTEGRITAS BERSIH</span>
-        </div>
-      </div>
-      <div class="score-grid" id="resScoreTiles"></div>
-      <div id="resTieBreakerBox" class="tiebreaker-box hidden"></div>
-      <div style="display:flex; justify-content:center; gap:12px; margin-top:24px; padding-top:16px; border-top:1px solid var(--border-color); flex-wrap:wrap;">
-        <button type="button" class="btn btn-primary" onclick="showScreen('home'); switchHomeTab('hist');" style="padding:10px 22px; font-weight:700; font-size:0.9rem; border-radius:8px;">
-          Lihat Riwayat Ujian
-        </button>
-        <button type="button" class="btn btn-outline" onclick="openUserProfileModal()" style="border-color:#0284c7; color:#0284c7; padding:10px 20px; font-weight:700; font-size:0.9rem; border-radius:8px;">
-          Cetak Kartu Ujian (A4)
-        </button>
-        <button type="button" class="btn btn-outline" onclick="openDonationModal()" style="border-color:#0284c7; color:#0284c7; padding:10px 18px; font-weight:700; font-size:0.9rem; border-radius:8px;">
-          Dukungan QRIS
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<footer id="siteFooter" class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-credit">
-      <span>&copy; 2026-2027 <strong>Simulasi CAT CPNS</strong></span>
-      <span style="opacity:0.4;">•</span>
-      <span>Created by: <strong>Irkham Maulana</strong></span>
-    </div>
-    <div class="footer-socials">
-      <a href="https://chat.whatsapp.com/EGjwVUm1Sqg7UIqkfaJlMI" target="_blank" rel="noopener noreferrer" class="social-link" title="Gabung Grup WhatsApp Resmi Persiapan CPNS 2027">
-        <svg viewBox="0 0 24 24" style="fill:#22c55e;"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-        <span style="color:#22c55e; font-weight:700;">Grup WA CPNS 2027</span>
-      </a>
-      <a href="https://wa.me/6287784800668?text=Halo%20Admin%20Simulasi%20CAT%20CPNS%202027" target="_blank" rel="noopener noreferrer" class="social-link" title="WhatsApp: 087784800668 (Laporan Soal &amp; Diskusi)">
-        <svg viewBox="0 0 24 24" style="fill:#0284c7;"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-        <span style="color:#0284c7; font-weight:600;">Admin WA: 087784800668</span>
-      </a>
-      <a href="https://www.instagram.com/mgnificmrna/" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram: @mgnificmrna">
-        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        <span>Instagram: @mgnificmrna</span>
-      </a>
-      <a href="https://www.linkedin.com/in/irkhammaulana/" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn: Irkham Maulana">
-        <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-        <span>LinkedIn</span>
-      </a>
-    </div>
-  </div>
-  <div id="floatingRobotDonation" class="floating-robot-wrap" onclick="openDonationModal()" title="Bantu kembangkan materi &amp; bank soal seikhlasnya">
-    <div class="robot-speech-bubble">
-      Bantu saya mengembangkan materi &amp; bank soal seikhlasnya! (Donasi kode unik 27) ✨
-    </div>
-    <button type="button" class="robot-btn" aria-label="Buka Donasi &amp; Dukungan Robot">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="11" width="18" height="10" rx="3"/>
-        <circle cx="12" cy="5" r="2"/>
-        <path d="M12 7v4"/>
-        <line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3"/>
-        <line x1="16" y1="15" x2="16.01" y2="15" stroke-width="3"/>
-        <path d="M9 18c1 .8 2 1 3 1s2-.2 3-1"/>
-        <line x1="1" y1="15" x2="3" y2="15"/>
-        <line x1="21" y1="15" x2="23" y2="15"/>
-      </svg>
-      <span class="robot-badge-pulse"></span>
+      Aksesibilitas
     </button>
   </div>
-</footer>
 
-<div id="modalDonation" class="modal-overlay hidden" onclick="if(event.target===this)closeDonationModal()">
-  <div class="modal-card" style="max-width:480px; padding:24px; position:relative; overflow-y:auto; max-height:92vh; border-radius:16px;">
-    <button type="button" onclick="closeDonationModal()" class="modal-close-btn" title="Tutup Modal">&times;</button>
-    <div style="text-align:center; margin-bottom:18px;">
-      <div style="width:52px; height:52px; border-radius:50%; background:#eff6ff; border:2px solid #bfdbfe; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="10" rx="3"/>
-          <circle cx="12" cy="5" r="2"/>
-          <path d="M12 7v4"/>
-          <line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3"/>
-          <line x1="16" y1="15" x2="16.01" y2="15" stroke-width="3"/>
-          <path d="M9 18c1 .8 2 1 3 1s2-.2 3-1"/>
-        </svg>
-      </div>
-      <span class="badge-tag-blue">DUKUNGAN SUKARELA OPERASIONAL &amp; MATERI</span>
-      <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary); margin:6px 0;">Dukungan Donasi via QRIS</h3>
-      <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
-        Halo Pejuang NIP! Bantu saya terus mengembangkan materi, modul belajar, dan bank soal CAT CPNS 2027. <strong>Bebas berapapun nominalnya, yang terpenting ikhlas dan tulus.</strong>
-      </p>
-    </div>
-    <div style="background:#ffffff; border:2px solid #0284c7; border-radius:14px; padding:18px; text-align:center; box-shadow:0 4px 14px rgba(2,132,199,0.08); margin-bottom:16px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px;">
-        <div style="display:flex; align-items:center; gap:6px;">
-          <span style="background:#0284c7; color:#fff; font-weight:900; font-size:0.95rem; padding:2px 8px; border-radius:4px;">QRIS</span>
-          <span style="font-size:0.75rem; color:#64748b; font-weight:600;">QR Code Standar Pembayaran Nasional</span>
+  <button type="button" id="btnBackToTop" class="btn-back-top is-hidden" onclick="scrollHomeSection('top')"
+    title="Kembali ke Atas" aria-label="Kembali ke Atas">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
+    </svg>
+  </button>
+
+  <div id="modalDonation" class="modal-overlay hidden" onclick="if(event.target===this)closeDonationModal()">
+    <div class="modal-card"
+      style="max-width:480px; padding:24px; position:relative; overflow-y:auto; max-height:92vh; border-radius:16px;">
+      <button type="button" onclick="closeDonationModal()" class="modal-close-btn" title="Tutup Modal">&times;</button>
+      <div style="text-align:center; margin-bottom:18px;">
+        <div
+          style="width:52px; height:52px; border-radius:50%; background:#eff6ff; border:2px solid #bfdbfe; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="3" />
+            <circle cx="12" cy="5" r="2" />
+            <path d="M12 7v4" />
+            <line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3" />
+            <line x1="16" y1="15" x2="16.01" y2="15" stroke-width="3" />
+            <path d="M9 18c1 .8 2 1 3 1s2-.2 3-1" />
+          </svg>
         </div>
-        <span style="background:#0369a1; color:#fff; font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:4px;">GPN</span>
+        <span class="badge-tag-blue">DUKUNGAN SUKARELA OPERASIONAL &amp; MATERI</span>
+        <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary); margin:6px 0;">Dukungan Donasi via
+          QRIS</h3>
+        <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+          Halo Pejuang NIP! Bantu saya terus mengembangkan materi, modul belajar, dan bank soal CAT CPNS 2027.
+          <strong>Bebas berapapun nominalnya, yang terpenting ikhlas dan tulus.</strong>
+        </p>
       </div>
-      <div style="font-weight:800; font-size:1.1rem; color:#0f172a; margin-bottom:2px;">MGNIFICMRNA - COURSE</div>
-      <div style="font-size:0.8rem; color:#475569; margin-bottom:14px; font-weight:600;">NMID : ID1026635465358 &bull; Kode: A01</div>
-      <div style="display:inline-block; padding:10px; background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; margin-bottom:12px; max-width:280px; width:100%;">
-        <img id="qrisMainImage" src="qris.jpg" alt="QRIS MGNIFICMRNA - COURSE" style="width:100%; height:auto; display:block; border-radius:6px;">
+      <div
+        style="background:#ffffff; border:2px solid #0284c7; border-radius:14px; padding:18px; text-align:center; box-shadow:0 4px 14px rgba(2,132,199,0.08); margin-bottom:16px;">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span
+              style="background:#0284c7; color:#fff; font-weight:900; font-size:0.95rem; padding:2px 8px; border-radius:4px;">QRIS</span>
+            <span style="font-size:0.75rem; color:#64748b; font-weight:600;">QR Code Standar Pembayaran Nasional</span>
+          </div>
+          <span
+            style="background:#0369a1; color:#fff; font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:4px;">GPN</span>
+        </div>
+        <div style="font-weight:800; font-size:1.1rem; color:#0f172a; margin-bottom:2px;">MGNIFICMRNA - COURSE</div>
+        <div style="font-size:0.8rem; color:#475569; margin-bottom:14px; font-weight:600;">NMID : ID1026635465358 &bull;
+          Kode: A01</div>
+        <div
+          style="display:inline-block; padding:10px; background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; margin-bottom:12px; max-width:280px; width:100%;">
+          <img id="qrisMainImage" src="qris.jpg" alt="QRIS MGNIFICMRNA - COURSE"
+            style="width:100%; height:auto; display:block; border-radius:6px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <a href="qris.jpg" download="QRIS_MGNIFICMRNA_COURSE.jpg" class="btn btn-outline"
+            style="font-size:0.8rem; padding:6px 16px; border-color:#0284c7; color:#0284c7; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border-radius:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>
+            Simpan Gambar QRIS
+          </a>
+        </div>
+        <div style="font-size:0.78rem; color:#475569; font-weight:600; line-height:1.45;">
+          Mendukung Semua Bank &amp; E-Wallet: BCA, Mandiri, BRImo, BNI, BSI, GoPay, OVO, DANA, ShopeePay, LinkAja
+        </div>
       </div>
-      <div style="margin-bottom:12px;">
-        <a href="qris.jpg" download="QRIS_MGNIFICMRNA_COURSE.jpg" class="btn btn-outline" style="font-size:0.8rem; padding:6px 16px; border-color:#0284c7; color:#0284c7; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border-radius:8px;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Simpan Gambar QRIS
-        </a>
+      <div class="notice-box-amber" style="display:block;">
+        <div style="font-weight:800; font-size:0.86rem; margin-bottom:4px;">💡 PETUNJUK DONASI + KODE UNIK (AKHIRI ANGKA
+          27)</div>
+        <p style="margin:0 0 8px 0;">Sertakan <strong>kode unik 27</strong> di akhir nominal (contoh: <strong>Rp
+            5.027</strong>, <strong>Rp 10.027</strong>, <strong>Rp 20.027</strong>, <strong>Rp 50.027</strong>) agar
+          mudah diverifikasi admin.</p>
       </div>
-      <div style="font-size:0.78rem; color:#475569; font-weight:600; line-height:1.45;">
-        Mendukung Semua Bank &amp; E-Wallet: BCA, Mandiri, BRImo, BNI, BSI, GoPay, OVO, DANA, ShopeePay, LinkAja
+      <div
+        style="background:linear-gradient(to right, #f0fdf4, #ecfdf5); border:1px solid #bbf7d0; border-radius:10px; padding:12px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-weight:700; font-size:0.84rem; color:#15803d;">Konfirmasi via WhatsApp</div>
+          <div style="font-size:0.82rem; font-weight:700; color:#0f172a;">0877-8480-0668</div>
+        </div>
+        <a href="https://wa.me/6287784800668?text=Halo%20Admin,%20saya%20sudah%20transfer%20donasi%20dengan%20kode%20unik%2027.%20Berikut%20bukti%20transfernya%20ya"
+          target="_blank" rel="noopener noreferrer"
+          style="background:#16a34a; color:#fff; font-weight:700; font-size:0.78rem; padding:7px 14px; border-radius:6px; text-decoration:none;">Konfirmasi
+          (+27) &rarr;</a>
       </div>
+      <button type="button" onclick="closeDonationModal()" class="btn btn-primary btn-block-action">Tutup</button>
     </div>
-    <div class="notice-box-amber" style="display:block;">
-      <div style="font-weight:800; font-size:0.86rem; margin-bottom:4px;">💡 PETUNJUK DONASI + KODE UNIK (AKHIRI ANGKA 27)</div>
-      <p style="margin:0 0 8px 0;">Sertakan <strong>kode unik 27</strong> di akhir nominal (contoh: <strong>Rp 5.027</strong>, <strong>Rp 10.027</strong>, <strong>Rp 20.027</strong>, <strong>Rp 50.027</strong>) agar mudah diverifikasi admin.</p>
-    </div>
-    <div style="background:linear-gradient(to right, #f0fdf4, #ecfdf5); border:1px solid #bbf7d0; border-radius:10px; padding:12px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <div>
-        <div style="font-weight:700; font-size:0.84rem; color:#15803d;">Konfirmasi via WhatsApp</div>
-        <div style="font-size:0.82rem; font-weight:700; color:#0f172a;">0877-8480-0668</div>
-      </div>
-      <a href="https://wa.me/6287784800668?text=Halo%20Admin,%20saya%20sudah%20transfer%20donasi%20dengan%20kode%20unik%2027.%20Berikut%20bukti%20transfernya%20ya" target="_blank" rel="noopener noreferrer" style="background:#16a34a; color:#fff; font-weight:700; font-size:0.78rem; padding:7px 14px; border-radius:6px; text-decoration:none;">Konfirmasi (+27) &rarr;</a>
-    </div>
-    <button type="button" onclick="closeDonationModal()" class="btn btn-primary btn-block-action">Tutup</button>
   </div>
-</div>
 
-<div id="modalPasswordLock" class="modal-overlay hidden" onclick="if(event.target===this)closePasswordModal()">
-  <div class="modal-card" style="max-width:440px; padding:24px; position:relative; border-radius:16px;">
-    <button type="button" onclick="closePasswordModal()" class="modal-close-btn" title="Tutup">&times;</button>
-    <div style="text-align:center; margin-bottom:16px;">
-      <div style="width:48px; height:48px; border-radius:50%; background:#fef2f2; border:1px solid #fee2e2; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc2626"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+  <div id="modalPasswordLock" class="modal-overlay hidden" onclick="if(event.target===this)closePasswordModal()">
+    <div class="modal-card" style="max-width:440px; padding:24px; position:relative; border-radius:16px;">
+      <button type="button" onclick="closePasswordModal()" class="modal-close-btn" title="Tutup">&times;</button>
+      <div style="text-align:center; margin-bottom:16px;">
+        <div
+          style="width:48px; height:48px; border-radius:50%; background:#fef2f2; border:1px solid #fee2e2; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc2626">
+            <path
+              d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+          </svg>
+        </div>
+        <h3 id="lockModalTitle"
+          style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 6px 0;">Akses Materi Terkunci
+        </h3>
+        <p id="lockModalDesc" style="font-size:0.84rem; color:var(--text-secondary); margin:0; line-height:1.45;">
+          Modul belajar ini dilindungi kata sandi resmi harian. Hubungi WhatsApp Admin untuk mendapatkan password.
+        </p>
       </div>
-      <h3 id="lockModalTitle" style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 6px 0;">Akses Materi Terkunci</h3>
-      <p id="lockModalDesc" style="font-size:0.84rem; color:var(--text-secondary); margin:0; line-height:1.45;">
-        Modul belajar ini dilindungi kata sandi resmi harian. Hubungi WhatsApp Admin untuk mendapatkan password.
-      </p>
-    </div>
-    <div style="margin-bottom:14px;">
-      <label class="form-label">Masukkan Kata Sandi Akses:</label>
-      <input type="password" id="inputFeaturePassword" class="form-input" placeholder="Masukkan password..." onkeydown="if(event.key==='Enter')verifyFeaturePassword()">
-      <div id="lockPasswordError" class="hidden" style="color:#ef4444; font-size:0.78rem; font-weight:600; margin-top:5px;">
-        Kata sandi tidak valid. Hubungi WhatsApp Admin: 087784800668.
+      <div style="margin-bottom:14px;">
+        <label class="form-label" for="inputFeaturePassword">Masukkan Kata Sandi Akses:</label>
+        <div class="password-input-wrap">
+          <input type="password" id="inputFeaturePassword" class="form-input" placeholder="Masukkan password..."
+            onkeydown="if(event.key==='Enter')verifyFeaturePassword()">
+          <button type="button" class="btn-eye-toggle" data-eye-for="inputFeaturePassword"
+            onclick="togglePasswordVisibility('inputFeaturePassword', this)" aria-label="Lihat Kata Sandi"
+            title="Intip / Lihat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+            </svg>
+          </button>
+        </div>
+        <div id="lockPasswordError" class="hidden"
+          style="color:#ef4444; font-size:0.78rem; font-weight:600; margin-top:5px;">
+          Kata sandi tidak valid. Hubungi WhatsApp Admin: 087784800668.
+        </div>
       </div>
-    </div>
-    <div class="notice-box-amber">
-      <div><strong>Akses Materi Wajib Donasi:</strong> Bebas berapapun asal ikhlas (+ kode unik 27).</div>
-      <button type="button" onclick="closePasswordModal(); openDonationModal();" style="background:#b45309; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer; white-space:nowrap;">Scan QRIS &rarr;</button>
-    </div>
-    <div style="display:flex; gap:10px;">
-      <button type="button" onclick="verifyFeaturePassword()" class="btn btn-primary" style="flex:1; justify-content:center;">Buka Akses</button>
-      <a id="btnLockWaRequest" href="https://wa.me/6287784800668?text=Halo%20Admin,%20saya%20minta%20password%20akses%20CPNS%202027" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="border-color:#22c55e; color:#15803d; font-weight:700;">Minta via WA</a>
+      <div class="notice-box-amber">
+        <div><strong>Akses Materi Wajib Donasi:</strong> Bebas berapapun asal ikhlas (+ kode unik 27).</div>
+        <button type="button" onclick="closePasswordModal(); openDonationModal();"
+          style="background:#b45309; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer; white-space:nowrap;">Scan
+          QRIS &rarr;</button>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" onclick="verifyFeaturePassword()" class="btn btn-primary"
+          style="flex:1; justify-content:center;">Buka Akses</button>
+        <a id="btnLockWaRequest"
+          href="https://wa.me/6287784800668?text=Halo%20Admin,%20saya%20minta%20password%20akses%20CPNS%202027"
+          target="_blank" rel="noopener noreferrer" class="btn btn-outline"
+          style="border-color:#22c55e; color:#15803d; font-weight:700;">Minta via WA</a>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="modalUserAuth" class="modal-overlay hidden" onclick="if(event.target===this)closeAuthModal()">
-  <div class="modal-card auth-modal-card" style="max-width:520px; padding:24px; position:relative; overflow-y:auto; max-height:92vh;">
-    <button type="button" onclick="closeAuthModal()" class="modal-close-btn">&times;</button>
-    <div style="text-align:center; margin-bottom:16px;">
-      <span class="badge-tag-blue">PORTAL SELEKSI CASN 2027</span>
-      <h3 style="font-size:1.22rem; font-weight:800; color:var(--text-primary); margin:6px 0 4px 0;">Portal Akun Peserta CAT</h3>
-      <p style="font-size:0.83rem; color:var(--text-secondary); margin:0; line-height:1.45;">
-        Mendukung multi-peserta di satu perangkat dengan proteksi PIN 6 digit &amp; riwayat skor terisolasi per peserta.
-      </p>
+  <div id="modalUserAuth" class="modal-overlay hidden" onclick="if(event.target===this)closeAuthModal()">
+    <div class="modal-card auth-modal-card"
+      style="max-width:520px; padding:24px; position:relative; overflow-y:auto; max-height:92vh;">
+      <button type="button" onclick="closeAuthModal()" class="modal-close-btn">&times;</button>
+      <div style="text-align:center; margin-bottom:16px;">
+        <span class="badge-tag-blue">PORTAL SELEKSI CASN 2027</span>
+        <h3 style="font-size:1.22rem; font-weight:800; color:var(--text-primary); margin:6px 0 4px 0;">Portal Akun
+          Peserta CAT</h3>
+        <p style="font-size:0.83rem; color:var(--text-secondary); margin:0; line-height:1.45;">
+          Mendukung multi-peserta di satu perangkat dengan proteksi PIN 6 digit &amp; riwayat skor terisolasi per
+          peserta.
+        </p>
+      </div>
+
+      <div id="authQuickSwitchWrap" class="quick-switch-wrap hidden">
+        <div class="quick-switch-label">Akun Terdaftar di Perangkat Ini (Klik untuk Masuk):</div>
+        <div id="authQuickSwitchList" class="quick-switch-list"></div>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" id="authTabBtnLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">Masuk
+          Akun</button>
+        <button type="button" id="authTabBtnRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">Daftar
+          Peserta Baru</button>
+      </div>
+
+      <div id="authPaneLogin">
+        <div id="authLoginError" class="auth-inline-error hidden"></div>
+        <div id="authResetSuccess" class="auth-hint-ok hidden" style="margin-bottom:12px;"></div>
+        <form id="formUserLogin" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="authLoginIdentifier">Email / No. HP / No. Peserta (27-01-...)</label>
+            <input type="text" id="authLoginIdentifier" required
+              placeholder="Contoh: peserta@gmail.com atau 081234567890" class="form-input">
+          </div>
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label class="form-label" for="authLoginPin" style="margin-bottom:0;">PIN Keamanan (6 Digit Angka)</label>
+              <button type="button" onclick="toggleForgotPinPane(true)"
+                style="border:none; background:none; color:var(--sscasn-blue); font-size:0.78rem; font-weight:700; cursor:pointer; padding:0;">Lupa
+                PIN?</button>
+            </div>
+            <div class="password-input-wrap">
+              <input type="password" id="authLoginPin" required maxlength="6" inputmode="numeric"
+                placeholder="Masukkan 6 digit PIN" class="form-input">
+              <button type="button" class="btn-eye-toggle" data-eye-for="authLoginPin"
+                onclick="togglePasswordVisibility('authLoginPin', this)" aria-label="Lihat PIN"
+                title="Intip / Lihat PIN">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block-action"
+            style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border:none;">
+            Masuk ke Portal CAT
+          </button>
+        </form>
+        <form id="authForgotPinPane" class="hidden" onsubmit="handleResetPinSubmit(event)">
+          <div id="authResetError" class="auth-inline-error hidden"></div>
+          <p style="font-size:0.82rem; color:var(--text-secondary); margin:0 0 12px; line-height:1.45;">
+            Verifikasi <strong>Email</strong> dan <strong>No. HP</strong> yang terdaftar di perangkat ini untuk mengatur
+            ulang PIN 6 digit Anda.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="resetPinEmail">Email Terdaftar</label>
+            <input type="email" id="resetPinEmail" required placeholder="Contoh: irkhammuhamad80@gmail.com"
+              class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="resetPinNoHp">Nomor HP / WhatsApp Terdaftar</label>
+            <input type="tel" id="resetPinNoHp" required placeholder="Contoh: 081228322893" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="resetPinNewPin">Buat PIN Baru (6 Digit Angka)</label>
+            <div class="password-input-wrap">
+              <input type="password" id="resetPinNewPin" required maxlength="6" inputmode="numeric"
+                placeholder="6 digit angka baru" class="form-input">
+              <button type="button" class="btn-eye-toggle" data-eye-for="resetPinNewPin"
+                onclick="togglePasswordVisibility('resetPinNewPin', this)" aria-label="Lihat PIN Baru"
+                title="Intip / Lihat PIN Baru">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn-outline" onclick="toggleForgotPinPane(false)">Kembali</button>
+            <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;">Simpan PIN
+              Baru</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="authPaneRegister" class="hidden">
+        <div id="authRegisterError" class="auth-inline-error hidden"></div>
+        <form id="formUserAuth" onsubmit="handleRegisterSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="authInputNama">Nama Lengkap Peserta <span
+                style="color:#ef4444;">*</span></label>
+            <input type="text" id="authInputNama" required placeholder="Contoh: Irkham Maulana (min. 3 karakter)"
+              class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="authInputEmail">Email Aktif Peserta <span
+                style="color:#ef4444;">*</span></label>
+            <input type="email" id="authInputEmail" required placeholder="Contoh: peserta@gmail.com" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="authInputNoHp">Nomor WhatsApp / HP Aktif (08 / 62 / +62) <span
+                style="color:#ef4444;">*</span></label>
+            <input type="tel" id="authInputNoHp" required placeholder="Contoh: 087784800668" class="form-input">
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:3px;">Nomor peserta otomatis terformat
+              menjadi <strong>27-01-[Nomor HP]</strong>.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="authInputFormasi">Pilihan Formasi / Jabatan CPNS</label>
+            <select id="authInputFormasi" class="form-select">
+              <option value="">-- Pilih Formasi (Opsional / Umum) --</option>
+              <option value="Pranata Komputer Ahli Pertama">Pranata Komputer Ahli Pertama</option>
+              <option value="Pranata Komputer Terampil">Pranata Komputer Terampil</option>
+              <option value="Pengembang Teknologi Pembelajaran (PTP)">Pengembang Teknologi Pembelajaran (PTP)</option>
+              <option value="Penata Layanan Operasional">Penata Layanan Operasional</option>
+              <option value="Pengadministrasi Perkantoran">Pengadministrasi Perkantoran</option>
+              <option value="Guru &amp; Tenaga Pendidik">Guru &amp; Tenaga Pendidik</option>
+              <option value="Analis Kebijakan / Perencana">Analis Kebijakan / Perencana</option>
+              <option value="Formasi Umum SKD (Kementerian / Lembaga)">Formasi Umum SKD (Kementerian / Lembaga)</option>
+              <option value="Formasi Umum SKD (Pemerintah Daerah)">Formasi Umum SKD (Pemerintah Daerah)</option>
+              <option value="Sekolah Kedinasan (IPDN / STAN / Poltekip)">Sekolah Kedinasan (IPDN / STAN / Poltekip)
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="authInputPin">Buat PIN Login (6 Digit Angka) <span
+                style="color:#ef4444;">*</span></label>
+            <div class="auth-pin-row">
+              <div class="password-input-wrap">
+                <input type="password" id="authInputPin" required maxlength="6" inputmode="numeric"
+                  placeholder="6 digit angka (misal: 123456)" class="form-input">
+                <button type="button" class="btn-eye-toggle" data-eye-for="authInputPin"
+                  onclick="togglePasswordVisibility('authInputPin', this)" aria-label="Lihat PIN"
+                  title="Intip / Lihat PIN">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                      d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                  </svg>
+                </button>
+              </div>
+              <button type="button" id="btnGeneratePin" class="btn btn-secondary" onclick="generateAndFillPin()"
+                style="white-space:nowrap;">Buat PIN Otomatis</button>
+            </div>
+            <div id="authPinGeneratedHint" class="auth-hint-ok hidden"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="authInputFoto">Unggah Pas Foto Resmi 3:4 <span
+                style="color:#ef4444;">*</span></label>
+            <div class="foto-upload-box">
+              <div id="authFotoPreviewWrap" class="foto-preview-thumb">
+                <span>FOTO<br>3:4</span>
+              </div>
+              <div class="foto-upload-meta">
+                <input type="file" id="authInputFoto" accept="image/*" class="foto-upload-input"
+                  onchange="handleRegisterFotoChange(this)">
+                <div id="authFotoStatusText"
+                  style="font-size:0.72rem; color:var(--text-muted); margin-top:4px; line-height:1.4;">Wajib
+                  JPG/PNG/WebP. Otomatis disesuaikan ke rasio 3:4 untuk Kartu Peserta &amp; arsip Drive pribadi admin.
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block-action"
+            style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border:none;">
+            Daftar &amp; Masuk CAT
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <div id="authQuickSwitchWrap" class="quick-switch-wrap hidden">
-      <div class="quick-switch-label">Akun Terdaftar di Perangkat Ini (Klik untuk Masuk):</div>
-      <div id="authQuickSwitchList" class="quick-switch-list"></div>
-    </div>
-
-    <div class="auth-tabs">
-      <button type="button" id="authTabBtnLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">Masuk Akun</button>
-      <button type="button" id="authTabBtnRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">Daftar Peserta Baru</button>
-    </div>
-
-    <div id="authPaneLogin">
-      <div id="authLoginError" class="auth-inline-error hidden"></div>
-      <form id="formUserLogin" onsubmit="handleLoginSubmit(event)">
+  <div id="modalEditProfile" class="modal-overlay hidden" onclick="if(event.target===this)closeEditProfileModal()">
+    <div class="modal-card auth-modal-card"
+      style="max-width:480px; padding:24px; position:relative; overflow-y:auto; max-height:92vh;">
+      <button type="button" onclick="closeEditProfileModal()" class="modal-close-btn" title="Tutup">&times;</button>
+      <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 4px;">Ubah Biodata Diri</h3>
+      <p style="font-size:0.82rem; color:var(--text-secondary); margin:0 0 14px;">Perbarui nama, nomor WhatsApp, formasi
+        tujuan, atau PIN login Anda.</p>
+      <div id="editProfileError" class="auth-inline-error hidden"></div>
+      <form onsubmit="handleEditProfileSubmit(event)">
         <div class="form-group">
-          <label class="form-label" for="authLoginIdentifier">Email / No. HP / No. Peserta (27-01-...)</label>
-          <input type="text" id="authLoginIdentifier" required placeholder="Contoh: peserta@gmail.com atau 081234567890" class="form-input">
+          <label class="form-label" for="editProfileNama">Nama Lengkap</label>
+          <input type="text" id="editProfileNama" required class="form-input">
         </div>
         <div class="form-group">
-          <label class="form-label" for="authLoginPin">PIN Keamanan (6 Digit Angka)</label>
-          <input type="password" id="authLoginPin" required maxlength="6" inputmode="numeric" placeholder="Masukkan 6 digit PIN" class="form-input">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block-action" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border:none;">
-          Masuk ke Portal CAT
-        </button>
-      </form>
-    </div>
-
-    <div id="authPaneRegister" class="hidden">
-      <div id="authRegisterError" class="auth-inline-error hidden"></div>
-      <form id="formUserAuth" onsubmit="handleRegisterSubmit(event)">
-        <div class="form-group">
-          <label class="form-label" for="authInputNama">Nama Lengkap Peserta <span style="color:#ef4444;">*</span></label>
-          <input type="text" id="authInputNama" required placeholder="Contoh: Irkham Maulana (min. 3 karakter)" class="form-input">
+          <label class="form-label" for="editProfileNoHp">No. WhatsApp / HP</label>
+          <input type="tel" id="editProfileNoHp" required class="form-input">
         </div>
         <div class="form-group">
-          <label class="form-label" for="authInputEmail">Email Aktif Peserta <span style="color:#ef4444;">*</span></label>
-          <input type="email" id="authInputEmail" required placeholder="Contoh: peserta@gmail.com" class="form-input">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="authInputNoHp">Nomor WhatsApp / HP Aktif (08 / 62 / +62) <span style="color:#ef4444;">*</span></label>
-          <input type="tel" id="authInputNoHp" required placeholder="Contoh: 087784800668" class="form-input">
-          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:3px;">Nomor peserta otomatis terformat menjadi <strong>27-01-[Nomor HP]</strong>.</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="authInputFormasi">Pilihan Formasi / Jabatan CPNS</label>
-          <select id="authInputFormasi" class="form-select">
-            <option value="">-- Pilih Formasi (Opsional / Umum) --</option>
+          <label class="form-label" for="editProfileFormasi">Formasi Jabatan</label>
+          <select id="editProfileFormasi" class="form-select">
+            <option value="Umum">Umum</option>
             <option value="Pranata Komputer Ahli Pertama">Pranata Komputer Ahli Pertama</option>
             <option value="Pranata Komputer Terampil">Pranata Komputer Terampil</option>
             <option value="Pengembang Teknologi Pembelajaran (PTP)">Pengembang Teknologi Pembelajaran (PTP)</option>
@@ -584,211 +1172,333 @@
             <option value="Analis Kebijakan / Perencana">Analis Kebijakan / Perencana</option>
             <option value="Formasi Umum SKD (Kementerian / Lembaga)">Formasi Umum SKD (Kementerian / Lembaga)</option>
             <option value="Formasi Umum SKD (Pemerintah Daerah)">Formasi Umum SKD (Pemerintah Daerah)</option>
-            <option value="Sekolah Kedinasan (IPDN / STAN / Poltekip)">Sekolah Kedinasan (IPDN / STAN / Poltekip)</option>
+            <option value="Sekolah Kedinasan (IPDN / STAN / Poltekip)">Sekolah Kedinasan (IPDN / STAN / Poltekip)
+            </option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="authInputPin">Buat PIN Login (6 Digit Angka) <span style="color:#ef4444;">*</span></label>
-          <div class="auth-pin-row">
-            <input type="password" id="authInputPin" required maxlength="6" inputmode="numeric" placeholder="6 digit angka (misal: 123456)" class="form-input">
-            <button type="button" id="btnGeneratePin" class="btn btn-secondary" onclick="generateAndFillPin()" style="white-space:nowrap;">Buat PIN Otomatis</button>
+          <label class="form-label" for="editProfilePin">PIN Baru (Opsional, 6 digit angka)</label>
+          <div class="password-input-wrap">
+            <input type="password" id="editProfilePin" maxlength="6" inputmode="numeric"
+              placeholder="Kosongkan bila tidak ganti PIN" class="form-input">
+            <button type="button" class="btn-eye-toggle" data-eye-for="editProfilePin"
+              onclick="togglePasswordVisibility('editProfilePin', this)" aria-label="Lihat PIN Baru"
+              title="Intip / Lihat PIN Baru">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+              </svg>
+            </button>
           </div>
-          <div id="authPinGeneratedHint" class="auth-hint-ok hidden"></div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block-action" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border:none;">
-          Daftar &amp; Masuk CAT
-        </button>
+        <div class="form-group">
+          <label class="form-label" for="editProfileFoto">Perbarui Pas Foto 3:4 (Opsional)</label>
+          <div class="foto-upload-box">
+            <div id="editFotoPreviewWrap" class="foto-preview-thumb">
+              <span>FOTO<br>3:4</span>
+            </div>
+            <div class="foto-upload-meta">
+              <input type="file" id="editProfileFoto" accept="image/*" class="foto-upload-input"
+                onchange="handleEditFotoChange(this)">
+              <div id="editFotoStatusText" style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">Kosongkan
+                bila tidak ingin mengubah pas foto saat ini.</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeEditProfileModal()">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
       </form>
     </div>
   </div>
-</div>
 
-<div id="modalUserProfile" class="modal-overlay hidden" onclick="if(event.target===this)closeUserProfileModal()">
-  <div class="modal-card" style="max-width:580px; padding:24px; position:relative; overflow-y:auto; max-height:92vh;">
-    <button type="button" onclick="closeUserProfileModal()" class="modal-close-btn">&times;</button>
-    <div id="printParticipantCardArea" style="background:#ffffff; border:2px solid #0284c7; border-radius:12px; padding:20px; color:#0f172a; box-shadow:0 4px 14px rgba(2,132,199,0.08); margin-bottom:18px;">
-      <div style="border-bottom:2px solid #0284c7; padding-bottom:10px; margin-bottom:14px; display:flex; align-items:center; gap:12px;">
-        <div style="width:48px; height:48px; border-radius:8px; background:linear-gradient(135deg, #0284c7, #0369a1); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.2rem; font-weight:900;">BKN</div>
-        <div style="flex:1;">
-          <div style="font-size:0.72rem; font-weight:700; color:#0369a1; letter-spacing:0.5px;">BADAN KEPEGAWAIAN NEGARA REPUBLIK INDONESIA</div>
-          <div style="font-size:0.95rem; font-weight:900; color:#0f172a; line-height:1.25;">KARTU TANDA PESERTA UJIAN SELEKSI CASN 2027</div>
-          <div style="font-size:0.7rem; color:#64748b;">Sistem Computer Assisted Test (CAT) &bull; Terakreditasi Standar Nasional</div>
-        </div>
-      </div>
-      <div style="display:grid; grid-template-columns:100px 1fr; gap:14px; margin-bottom:14px; align-items:start;">
-        <div style="text-align:center;">
-          <div style="width:96px; height:110px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px;">
-            <div id="cardAvatarInitial" style="width:44px; height:44px; border-radius:50%; background:#0284c7; color:#fff; font-size:1.2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:4px;">P</div>
-            <span style="font-size:0.65rem; font-weight:700; color:#0369a1;">PAS FOTO CAT</span>
+  <div id="modalUserProfile" class="modal-overlay hidden" onclick="if(event.target===this)closeUserProfileModal()">
+    <div class="modal-card" style="max-width:580px; padding:24px; position:relative; overflow-y:auto; max-height:92vh;">
+      <button type="button" onclick="closeUserProfileModal()" class="modal-close-btn">&times;</button>
+      <div id="printParticipantCardArea"
+        style="background:#ffffff; border:2px solid #0284c7; border-radius:12px; padding:20px; color:#0f172a; box-shadow:0 4px 14px rgba(2,132,199,0.08); margin-bottom:18px;">
+        <div
+          style="border-bottom:2px solid #0284c7; padding-bottom:10px; margin-bottom:14px; display:flex; align-items:center; gap:12px;">
+          <div
+            style="width:48px; height:48px; border-radius:8px; background:linear-gradient(135deg, #0284c7, #0369a1); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.2rem; font-weight:900;">
+            BKN</div>
+          <div style="flex:1;">
+            <div style="font-size:0.72rem; font-weight:700; color:#0369a1; letter-spacing:0.5px;">BADAN KEPEGAWAIAN
+              NEGARA REPUBLIK INDONESIA</div>
+            <div style="font-size:0.95rem; font-weight:900; color:#0f172a; line-height:1.25;">KARTU TANDA PESERTA UJIAN
+              SELEKSI CASN 2027</div>
+            <div style="font-size:0.7rem; color:#64748b;">Sistem Computer Assisted Test (CAT) &bull; Terakreditasi
+              Standar Nasional</div>
           </div>
-          <span style="font-size:0.65rem; color:#16a34a; font-weight:800; display:block; margin-top:4px;">TERVERIFIKASI</span>
         </div>
-        <table style="width:100%; font-size:0.8rem; border-collapse:collapse; color:#1e293b;">
-          <tr><td class="text-muted-row" style="width:125px;">Nama Peserta</td><td style="padding:4px 0; font-weight:800; color:#0f172a;" id="cardDisplayNama">-</td></tr>
-          <tr><td class="text-muted-row">Email Peserta</td><td style="padding:4px 0; font-weight:700; color:#0284c7;" id="cardDisplayEmail">-</td></tr>
-          <tr><td class="text-muted-row">No. Peserta</td><td style="padding:4px 0; font-weight:800; color:#0284c7;" id="cardDisplayNoPeserta">-</td></tr>
-          <tr><td class="text-muted-row">No. WhatsApp</td><td style="padding:4px 0; font-weight:700; color:#0f172a;" id="cardDisplayWhatsapp">-</td></tr>
-          <tr><td class="text-muted-row">PIN Akses</td><td style="padding:4px 0; font-weight:700; color:#0f172a;" id="cardDisplayPin">-</td></tr>
-          <tr><td class="text-muted-row">Formasi Jabatan</td><td style="padding:4px 0; font-weight:700; color:#0f172a;" id="cardDisplayFormasi">-</td></tr>
-          <tr><td class="text-muted-row">Waktu Terdaftar</td><td style="padding:4px 0; font-size:0.75rem; color:#64748b;" id="cardDisplayWaktu">-</td></tr>
-        </table>
-      </div>
-      <div style="border-top:1px dashed #cbd5e1; padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <div style="font-size:0.68rem; font-weight:700; color:#475569;">STATUS PERANGKAT:</div>
-          <div style="font-size:0.72rem; color:#16a34a; font-weight:700;">Tersimpan Aman &amp; Terisolasi Multi-Akun</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="display:inline-flex; align-items:flex-end; gap:2px; height:22px; padding:2px 6px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px;">
-            <div style="width:2px; height:18px; background:#0f172a;"></div>
-            <div style="width:3px; height:18px; background:#0f172a;"></div>
-            <div style="width:1px; height:18px; background:#0f172a;"></div>
-            <div style="width:4px; height:18px; background:#0f172a;"></div>
-            <div style="width:2px; height:18px; background:#0f172a;"></div>
-            <div style="width:3px; height:18px; background:#0f172a;"></div>
-            <div style="width:1px; height:18px; background:#0f172a;"></div>
-            <div style="width:3px; height:18px; background:#0f172a;"></div>
+        <div style="display:grid; grid-template-columns:100px 1fr; gap:14px; margin-bottom:14px; align-items:start;">
+          <div style="text-align:center;">
+            <div id="cardAvatarFrame"
+              style="width:96px; height:110px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px; overflow:hidden;">
+              <img id="cardAvatarPhoto" src="" alt="Pas Foto Peserta" class="card-avatar-photo hidden">
+              <div id="cardAvatarPlaceholder"
+                style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div id="cardAvatarInitial"
+                  style="width:44px; height:44px; border-radius:50%; background:#0284c7; color:#fff; font-size:1.2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:4px;">
+                  P</div>
+                <span style="font-size:0.65rem; font-weight:700; color:#0369a1;">PAS FOTO CAT</span>
+              </div>
+            </div>
+            <span
+              style="font-size:0.65rem; color:#16a34a; font-weight:800; display:block; margin-top:4px;">TERVERIFIKASI</span>
           </div>
-          <div style="font-size:0.62rem; color:#64748b; margin-top:2px;" id="cardDisplayBarcodeCode">CAT-2027-OK</div>
+          <table style="width:100%; font-size:0.8rem; border-collapse:collapse; color:#1e293b;">
+            <tr>
+              <td class="text-muted-row" style="width:125px;">Nama Peserta</td>
+              <td style="padding:4px 0; font-weight:800; color:#0f172a;" id="cardDisplayNama">-</td>
+            </tr>
+            <tr>
+              <td class="text-muted-row">Email Peserta</td>
+              <td style="padding:4px 0; font-weight:700; color:#0284c7;" id="cardDisplayEmail">-</td>
+            </tr>
+            <tr>
+              <td class="text-muted-row">No. Peserta</td>
+              <td style="padding:4px 0; font-weight:800; color:#0284c7;" id="cardDisplayNoPeserta">-</td>
+            </tr>
+            <tr>
+              <td class="text-muted-row">No. WhatsApp</td>
+              <td style="padding:4px 0; font-weight:700; color:#0f172a;" id="cardDisplayWhatsapp">-</td>
+            </tr>
+            <tr>
+              <td class="text-muted-row">PIN Akses</td>
+              <td style="padding:4px 0; font-weight:700; color:#0f172a;" id="cardDisplayPin">-</td>
+            </tr>
+            <tr>
+              <td class="text-muted-row">Formasi Jabatan</td>
+              <td style="padding:4px 0; font-weight:700; color:#0f172a;" id="cardDisplayFormasi">-</td>
+            </tr>
+            <tr>
+              <td class="text-muted-row">Waktu Terdaftar</td>
+              <td style="padding:4px 0; font-size:0.75rem; color:#64748b;" id="cardDisplayWaktu">-</td>
+            </tr>
+          </table>
+        </div>
+        <div
+          style="border-top:1px dashed #cbd5e1; padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:0.68rem; font-weight:700; color:#475569;">STATUS PERANGKAT:</div>
+            <div style="font-size:0.72rem; color:#16a34a; font-weight:700;">Tersimpan Aman &amp; Terisolasi Multi-Akun
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div
+              style="display:inline-flex; align-items:flex-end; gap:2px; height:22px; padding:2px 6px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px;">
+              <div style="width:2px; height:18px; background:#0f172a;"></div>
+              <div style="width:3px; height:18px; background:#0f172a;"></div>
+              <div style="width:1px; height:18px; background:#0f172a;"></div>
+              <div style="width:4px; height:18px; background:#0f172a;"></div>
+              <div style="width:2px; height:18px; background:#0f172a;"></div>
+              <div style="width:3px; height:18px; background:#0f172a;"></div>
+              <div style="width:1px; height:18px; background:#0f172a;"></div>
+              <div style="width:3px; height:18px; background:#0f172a;"></div>
+            </div>
+            <div style="font-size:0.62rem; color:#64748b; margin-top:2px;" id="cardDisplayBarcodeCode">CAT-2027-OK</div>
+          </div>
+        </div>
+      </div>
+      <div
+        style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-top:1px solid var(--border-color); padding-top:12px;">
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-primary" onclick="printParticipantCard()"
+            style="font-size:0.8rem; padding:6px 12px;">Cetak Kartu (A4)</button>
+          <button type="button" id="btnProfileLogout" class="btn btn-outline" onclick="logoutUser()"
+            style="font-size:0.8rem; padding:6px 12px; color:#dc2626; border-color:#fecaca;">Ganti Akun /
+            Keluar</button>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="closeUserProfileModal()"
+          style="font-size:0.82rem; padding:6px 14px;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="prepModal" class="modal-overlay hidden">
+    <div class="modal-card modal-prep">
+      <span class="prep-header-tag">PROTOKOL RESMI CAT BKN 2027</span>
+      <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Pakta Integritas
+        &amp; Persiapan Layar Penuh</h3>
+      <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.5;">Sebelum memulai simulasi ujian,
+        perhatikan ketentuan dan protokol karantina seleksi nasional berikut:</p>
+      <div class="prep-rule-list">
+        <div class="prep-rule-item"><span class="prep-rule-num">1</span>
+          <div><strong class="text-block-primary">Mode Karantina Satu Layar Penuh (Fullscreen Lockdown)</strong>Peramban
+            Anda akan dikunci otomatis ke mode layar penuh. Dilarang menutup atau meminimalkan jendela hingga waktu
+            ujian selesai.</div>
+        </div>
+        <div class="prep-rule-item"><span class="prep-rule-num">2</span>
+          <div><strong class="text-block-primary">Posisikan Diri Sebagai Peserta CPNS Sesungguhnya</strong>Kerjakan
+            seluruh butir soal secara mandiri dan jujur. Jangan berbuat curang, membuka tab pencarian, atau dibantu oleh
+            AI maupun pihak lain.</div>
+        </div>
+        <div class="prep-rule-item"><span class="prep-rule-num">3</span>
+          <div><strong class="text-block-primary">Kamera Pengawas &amp; Auto-Save Progres</strong>Kamera perangkat
+            diaktifkan sebagai instrumen pengawasan visual. Jawaban &amp; sisa waktu tersimpan otomatis (tahan
+            refresh/crash).</div>
+        </div>
+        <div class="prep-rule-item"><span class="prep-rule-num">4</span>
+          <div><strong class="text-block-primary">Sistem Keamanan Anti-Beralih Tab &amp; Jendela</strong>Setiap
+            perpindahan tab atau keluar layar penuh akan memicu peringatan dan tercatat pada log audit integritas.</div>
+        </div>
+        <div class="prep-rule-item"><span class="prep-rule-num">5</span>
+          <div><strong class="text-block-primary">Evaluasi &amp; Pembahasan Lengkap</strong>Skor Passing Grade
+            KepmenPANRB 321/2024 dan pembahasan analitis langsung terbuka saat sesi selesai.</div>
+        </div>
+      </div>
+      <div id="prepCameraError" class="prep-camera-error hidden">
+        <strong>Akses Kamera Ditolak / Tidak Ditemukan:</strong> Harap izinkan akses kamera pada ikon gembok peramban,
+        lalu klik Coba Lagi.
+      </div>
+      <div class="prep-agree-box">
+        <label class="prep-agree-label">
+          <input type="checkbox" id="chkAgreeIntegrity" onchange="togglePrepAgree(this.checked)">
+          <span>Saya memahami seluruh tata tertib ini, bersedia mengaktifkan kamera pengawas, dan siap mematuhi pakta
+            integritas ujian tanpa bantuan AI atau pihak lain.</span>
+        </label>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" onclick="closePrepModal()">Batal</button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btnStartStudyFallback" class="btn btn-secondary hidden"
+            onclick="startStudyFallbackFromPrep()">Latihan Mandiri (Tanpa Kamera)</button>
+          <button type="button" id="btnStartExamConfirmed" class="btn btn-primary" disabled
+            onclick="executeConfirmedCatStart()">Izinkan Kamera &amp; Masuk Layar Penuh</button>
         </div>
       </div>
     </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-top:1px solid var(--border-color); padding-top:12px;">
-      <div style="display:flex; gap:8px;">
-        <button type="button" class="btn btn-primary" onclick="printParticipantCard()" style="font-size:0.8rem; padding:6px 12px;">Cetak Kartu (A4)</button>
-        <button type="button" id="btnProfileLogout" class="btn btn-outline" onclick="logoutUser()" style="font-size:0.8rem; padding:6px 12px; color:#dc2626; border-color:#fecaca;">Ganti Akun / Keluar</button>
-      </div>
-      <button type="button" class="btn btn-secondary" onclick="closeUserProfileModal()" style="font-size:0.82rem; padding:6px 14px;">Tutup</button>
-    </div>
   </div>
-</div>
 
-<div id="prepModal" class="modal-overlay hidden">
-  <div class="modal-card modal-prep">
-    <span class="prep-header-tag">PROTOKOL RESMI CAT BKN 2027</span>
-    <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Pakta Integritas &amp; Persiapan Layar Penuh</h3>
-    <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.5;">Sebelum memulai simulasi ujian, perhatikan ketentuan dan protokol karantina seleksi nasional berikut:</p>
-    <div class="prep-rule-list">
-      <div class="prep-rule-item"><span class="prep-rule-num">1</span><div><strong class="text-block-primary">Mode Karantina Satu Layar Penuh (Fullscreen Lockdown)</strong>Peramban Anda akan dikunci otomatis ke mode layar penuh. Dilarang menutup atau meminimalkan jendela hingga waktu ujian selesai.</div></div>
-      <div class="prep-rule-item"><span class="prep-rule-num">2</span><div><strong class="text-block-primary">Posisikan Diri Sebagai Peserta CPNS Sesungguhnya</strong>Kerjakan seluruh butir soal secara mandiri dan jujur. Jangan berbuat curang, membuka tab pencarian, atau dibantu oleh AI maupun pihak lain.</div></div>
-      <div class="prep-rule-item"><span class="prep-rule-num">3</span><div><strong class="text-block-primary">Kamera Pengawas &amp; Auto-Save Progres</strong>Kamera perangkat diaktifkan sebagai instrumen pengawasan visual. Jawaban &amp; sisa waktu tersimpan otomatis (tahan refresh/crash).</div></div>
-      <div class="prep-rule-item"><span class="prep-rule-num">4</span><div><strong class="text-block-primary">Sistem Keamanan Anti-Beralih Tab &amp; Jendela</strong>Setiap perpindahan tab atau keluar layar penuh akan memicu peringatan dan tercatat pada log audit integritas.</div></div>
-      <div class="prep-rule-item"><span class="prep-rule-num">5</span><div><strong class="text-block-primary">Evaluasi &amp; Pembahasan Lengkap</strong>Skor Passing Grade KepmenPANRB 321/2024 dan pembahasan analitis langsung terbuka saat sesi selesai.</div></div>
-    </div>
-    <div id="prepCameraError" class="prep-camera-error hidden">
-      <strong>Akses Kamera Ditolak / Tidak Ditemukan:</strong> Harap izinkan akses kamera pada ikon gembok peramban, lalu klik Coba Lagi.
-    </div>
-    <div class="prep-agree-box">
-      <label class="prep-agree-label">
-        <input type="checkbox" id="chkAgreeIntegrity" onchange="togglePrepAgree(this.checked)">
-        <span>Saya memahami seluruh tata tertib ini, bersedia mengaktifkan kamera pengawas, dan siap mematuhi pakta integritas ujian tanpa bantuan AI atau pihak lain.</span>
-      </label>
-    </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
-      <button type="button" class="btn btn-outline" onclick="closePrepModal()">Batal</button>
-      <div style="display:flex; gap:8px;">
-        <button type="button" id="btnStartStudyFallback" class="btn btn-secondary hidden" onclick="startStudyFallbackFromPrep()">Latihan Mandiri (Tanpa Kamera)</button>
-        <button type="button" id="btnStartExamConfirmed" class="btn btn-primary" disabled onclick="executeConfirmedCatStart()">Izinkan Kamera &amp; Masuk Layar Penuh</button>
+  <div id="finishModal" class="modal-overlay hidden">
+    <div class="modal-card modal-finish-big">
+      <div class="finish-big-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        Konfirmasi Penguncian Lembar Jawaban CAT
+      </div>
+      <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.5;">
+        Apakah Anda yakin ingin mengakhiri sesi simulasi ini? Lembar jawaban Anda akan dinilai otomatis, disimpan ke
+        riwayat, dan mode layar penuh akan ditutup.
+      </p>
+      <div class="finish-stats-grid">
+        <div class="finish-stat-card ans"><span class="finish-stat-val" id="bigModalStatAns">0</span><span
+            class="finish-stat-label">Yakin Dijawab</span></div>
+        <div class="finish-stat-card dbt"><span class="finish-stat-val" id="bigModalStatDoubt">0</span><span
+            class="finish-stat-label">Ragu-Ragu</span></div>
+        <div class="finish-stat-card emp"><span class="finish-stat-val" id="bigModalStatEmpty">0</span><span
+            class="finish-stat-label">Belum Dijawab</span></div>
+      </div>
+      <div id="finishNoticeBox" class="finish-notice-box ready"></div>
+      <div
+        style="font-size:0.84rem; color:var(--text-muted); margin-bottom:20px; display:flex; justify-content:space-between;">
+        <span id="bigModalTimeRemaining">Sisa Waktu: 00:00:00</span>
+        <span>Protokol: CAT BKN Karantina Terpadu</span>
+      </div>
+      <div class="finish-big-actions">
+        <button type="button" class="btn btn-outline" onclick="closeFinishModal()">Kembali Periksa Jawaban</button>
+        <button type="button" class="btn btn-primary" onclick="confirmFinishExam()">Ya, Kunci Jawaban &amp;
+          Selesaikan</button>
       </div>
     </div>
   </div>
-</div>
 
-<div id="finishModal" class="modal-overlay hidden">
-  <div class="modal-card modal-finish-big">
-    <div class="finish-big-title">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      Konfirmasi Penguncian Lembar Jawaban CAT
-    </div>
-    <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.5;">
-      Apakah Anda yakin ingin mengakhiri sesi simulasi ini? Lembar jawaban Anda akan dinilai otomatis, disimpan ke riwayat, dan mode layar penuh akan ditutup.
-    </p>
-    <div class="finish-stats-grid">
-      <div class="finish-stat-card ans"><span class="finish-stat-val" id="bigModalStatAns">0</span><span class="finish-stat-label">Yakin Dijawab</span></div>
-      <div class="finish-stat-card dbt"><span class="finish-stat-val" id="bigModalStatDoubt">0</span><span class="finish-stat-label">Ragu-Ragu</span></div>
-      <div class="finish-stat-card emp"><span class="finish-stat-val" id="bigModalStatEmpty">0</span><span class="finish-stat-label">Belum Dijawab</span></div>
-    </div>
-    <div id="finishNoticeBox" class="finish-notice-box ready"></div>
-    <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:20px; display:flex; justify-content:space-between;">
-      <span id="bigModalTimeRemaining">Sisa Waktu: 00:00:00</span>
-      <span>Protokol: CAT BKN Karantina Terpadu</span>
-    </div>
-    <div class="finish-big-actions">
-      <button type="button" class="btn btn-outline" onclick="closeFinishModal()">Kembali Periksa Jawaban</button>
-      <button type="button" class="btn btn-primary" onclick="confirmFinishExam()">Ya, Kunci Jawaban &amp; Selesaikan</button>
+  <div id="fullscreenWarningModal" class="modal-overlay hidden" style="z-index:2000;">
+    <div class="modal-card security-alert-card">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc2626">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+        </svg>
+        <h3 style="font-size:1.15rem; font-weight:700; color:#dc2626;">PERINGATAN: LAYAR PENUH TERPUTUS</h3>
+      </div>
+      <p style="font-size:0.9rem; line-height:1.5; color:var(--text-secondary); margin-bottom:14px;">
+        Anda terdeteksi keluar dari mode layar penuh. Sesuai regulasi CAT BKN, simulasi ujian harus berlangsung dalam
+        mode karantina satu layar penuh.
+      </p>
+      <div style="font-size:0.86rem; font-weight:700; color:#dc2626; margin-bottom:18px;">
+        Total Pelanggaran Layar Terdeteksi: <span id="fsExitCountText">1</span> kali
+      </div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn-danger-solid" onclick="resumeFullscreenFromWarning()">Kembali ke Mode Layar
+          Penuh</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="fullscreenWarningModal" class="modal-overlay hidden" style="z-index:2000;">
-  <div class="modal-card security-alert-card">
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc2626"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-      <h3 style="font-size:1.15rem; font-weight:700; color:#dc2626;">PERINGATAN: LAYAR PENUH TERPUTUS</h3>
-    </div>
-    <p style="font-size:0.9rem; line-height:1.5; color:var(--text-secondary); margin-bottom:14px;">
-      Anda terdeteksi keluar dari mode layar penuh. Sesuai regulasi CAT BKN, simulasi ujian harus berlangsung dalam mode karantina satu layar penuh.
-    </p>
-    <div style="font-size:0.86rem; font-weight:700; color:#dc2626; margin-bottom:18px;">
-      Total Pelanggaran Layar Terdeteksi: <span id="fsExitCountText">1</span> kali
-    </div>
-    <div style="display:flex; justify-content:flex-end;">
-      <button type="button" class="btn btn-danger-solid" onclick="resumeFullscreenFromWarning()">Kembali ke Mode Layar Penuh</button>
+  <div id="tabSwitchModal" class="modal-overlay hidden" style="z-index:2000;">
+    <div class="modal-card security-alert-card tab">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#d97706">
+          <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+        </svg>
+        <h3 style="font-size:1.15rem; font-weight:700; color:#d97706;">PERINGATAN: DETEKSI PERPINDAHAN JENDELA</h3>
+      </div>
+      <p style="font-size:0.9rem; line-height:1.5; color:var(--text-secondary); margin-bottom:14px;">
+        Anda terdeteksi beralih ke tab peramban lain atau membuka aplikasi eksternal selama simulasi ujian.
+      </p>
+      <div style="font-size:0.86rem; font-weight:700; color:#d97706; margin-bottom:18px;">
+        Total Perpindahan Jendela Terdeteksi: <span id="tabSwitchCountText">1</span> kali
+      </div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn-warning-solid" onclick="dismissTabSwitchWarning()">Saya Mengerti &amp;
+          Lanjutkan Ujian</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="tabSwitchModal" class="modal-overlay hidden" style="z-index:2000;">
-  <div class="modal-card security-alert-card tab">
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="#d97706"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-      <h3 style="font-size:1.15rem; font-weight:700; color:#d97706;">PERINGATAN: DETEKSI PERPINDAHAN JENDELA</h3>
-    </div>
-    <p style="font-size:0.9rem; line-height:1.5; color:var(--text-secondary); margin-bottom:14px;">
-      Anda terdeteksi beralih ke tab peramban lain atau membuka aplikasi eksternal selama simulasi ujian.
-    </p>
-    <div style="font-size:0.86rem; font-weight:700; color:#d97706; margin-bottom:18px;">
-      Total Perpindahan Jendela Terdeteksi: <span id="tabSwitchCountText">1</span> kali
-    </div>
-    <div style="display:flex; justify-content:flex-end;">
-      <button type="button" class="btn btn-warning-solid" onclick="dismissTabSwitchWarning()">Saya Mengerti &amp; Lanjutkan Ujian</button>
+  <div id="proctorSecurityToast" class="proctor-security-toast hidden" role="status" aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+      style="flex-shrink:0; color:#f87171;">
+      <path
+        d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+    </svg>
+    <span id="proctorSecurityToastText">Klik kanan &amp; salin soal dinonaktifkan selama ujian.</span>
+  </div>
+
+  <div id="proctorPrivacyShield" class="proctor-privacy-shield hidden" role="alertdialog" aria-modal="true"
+    aria-labelledby="proctorShieldTitle"
+    onclick="if(window.Proctor&&window.Proctor.clearFocusShield)window.Proctor.clearFocusShield()">
+    <div class="proctor-shield-card">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+        style="color:#f87171; margin-bottom:10px;">
+        <path
+          d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+      </svg>
+      <h3 id="proctorShieldTitle" style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-bottom:8px;">LAYAR
+        SOAL DISAMARKAN SEMENTARA</h3>
+      <p id="proctorPrivacyShieldText" style="font-size:0.9rem; color:#cbd5e1; line-height:1.55; margin-bottom:14px;">
+        Terdeteksi upaya screenshot, tangkapan layar, atau jendela kehilangan fokus. Soal disembunyikan otomatis demi
+        keamanan bank soal.</p>
+      <div style="font-size:0.8rem; color:#94a3b8; font-weight:600;">Kembali fokus &amp; klik area layar ujian untuk
+        melanjutkan.</div>
     </div>
   </div>
-</div>
 
-<div id="proctorSecurityToast" class="proctor-security-toast hidden" role="status" aria-live="polite">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex-shrink:0; color:#f87171;"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-  <span id="proctorSecurityToastText">Klik kanan &amp; salin soal dinonaktifkan selama ujian.</span>
-</div>
-
-<div id="proctorPrivacyShield" class="proctor-privacy-shield hidden" role="alertdialog" aria-modal="true" aria-labelledby="proctorShieldTitle" onclick="if(window.Proctor&&window.Proctor.clearFocusShield)window.Proctor.clearFocusShield()">
-  <div class="proctor-shield-card">
-    <svg width="42" height="42" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:#f87171; margin-bottom:10px;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-    <h3 id="proctorShieldTitle" style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-bottom:8px;">LAYAR SOAL DISAMARKAN SEMENTARA</h3>
-    <p id="proctorPrivacyShieldText" style="font-size:0.9rem; color:#cbd5e1; line-height:1.55; margin-bottom:14px;">Terdeteksi upaya screenshot, tangkapan layar, atau jendela kehilangan fokus. Soal disembunyikan otomatis demi keamanan bank soal.</p>
-    <div style="font-size:0.8rem; color:#94a3b8; font-weight:600;">Kembali fokus &amp; klik area layar ujian untuk melanjutkan.</div>
-  </div>
-</div>
-
-<script src="data/questions.js"></script>
-<script src="data/packages.js"></script>
-<script src="js/config.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/proctor.js"></script>
-<script src="js/result.js"></script>
-<script src="js/exam.js"></script>
-<script src="js/history.js"></script>
-<script src="js/landing.js"></script>
-<script src="js/app.js"></script>
-<script>
-if (typeof window.initApp === 'function') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.initApp);
-  } else {
-    window.initApp();
-  }
-}
-</script>
+  <script src="data/questions.js"></script>
+  <script src="data/packages.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/proctor.js"></script>
+  <script src="js/result.js"></script>
+  <script src="js/exam.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/landing.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if (typeof window.initApp === 'function') {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.initApp);
+      } else {
+        window.initApp();
+      }
+    }
+  </script>
 </body>
+
 </html>

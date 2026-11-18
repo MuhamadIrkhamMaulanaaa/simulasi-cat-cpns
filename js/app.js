@@ -92,6 +92,11 @@ function openPasswordModal(title, desc, callback, waCustomText) {
   if (descEl && desc) descEl.textContent = desc;
   if (inputEl) {
     inputEl.value = '';
+    if (inputEl.type === 'text' && typeof window.togglePasswordVisibility === 'function') {
+      window.togglePasswordVisibility('inputFeaturePassword');
+    } else {
+      inputEl.type = 'password';
+    }
     setTimeout(() => inputEl.focus(), 100);
   }
   if (errEl) errEl.classList.add('hidden');
@@ -207,17 +212,126 @@ function openSkbPackage(pkgId, mode) {
   openLockedPackage(pkgId, mode);
 }
 
-function switchHomeTab(tab) {
-  ['pkg', 'cheat', 'hist'].forEach((t) => {
+function switchHomeTab(tab, scrollIntoContent) {
+  const validTabs = ['pkg', 'cheat', 'hist', 'profile'];
+  const activeTab = validTabs.includes(tab) ? tab : 'pkg';
+  validTabs.forEach((t) => {
     const cap = t.charAt(0).toUpperCase() + t.slice(1);
     const pane = document.getElementById('homeTab' + cap);
     const btn = document.getElementById('tabNav' + cap);
-    if (pane) pane.classList.toggle('hidden', t !== tab);
-    if (btn) btn.classList.toggle('active', t === tab);
+    if (pane) pane.classList.toggle('hidden', t !== activeTab);
+    if (btn) btn.classList.toggle('active', t === activeTab);
   });
-  if (tab === 'hist' && window.History) {
+
+  const portalTitleMap = {
+    pkg: 'Beranda Simulasi & Paket Soal',
+    hist: 'Beranda Pendaftaran & Riwayat',
+    cheat: 'Materi Belajar & Rumus Cepat',
+    profile: 'Profile Saya'
+  };
+  const portalTitleEl = document.getElementById('hdrPortalTitle');
+  if (portalTitleEl && portalTitleMap[activeTab]) {
+    portalTitleEl.textContent = portalTitleMap[activeTab];
+  }
+
+  if (activeTab === 'hist' && window.History) {
     window.History.render();
   }
+  if (activeTab === 'profile' && window.Auth && typeof window.Auth.syncUI === 'function') {
+    window.Auth.syncUI(document);
+  }
+  if (scrollIntoContent && typeof document !== 'undefined') {
+    const target = document.getElementById('homeSubNavStrip') || document.getElementById('homeContentWrap');
+    if (target && typeof target.scrollIntoView === 'function') {
+      try {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (_) { }
+    }
+  }
+}
+
+function openPortalTabOrLogin(tab, optionalPkgId) {
+  const user = typeof window.getRegisteredUser === 'function' ? window.getRegisteredUser() : null;
+  if (!user) {
+    if (typeof window.openAuthModal === 'function') {
+      window.openAuthModal(() => {
+        if (typeof window.showScreen === 'function') window.showScreen('home');
+        switchHomeTab(tab || 'pkg', false);
+        if (optionalPkgId) {
+          if (typeof isPackageLocked === 'function' && isPackageLocked(optionalPkgId)) {
+            openLockedPackage(optionalPkgId, 'cat');
+          } else if (typeof window.openPrepModal === 'function') {
+            window.openPrepModal(optionalPkgId);
+          }
+        }
+      });
+    }
+    return;
+  }
+  if (typeof window.showScreen === 'function') window.showScreen('home');
+  switchHomeTab(tab || 'pkg', true);
+  if (optionalPkgId) {
+    if (typeof isPackageLocked === 'function' && isPackageLocked(optionalPkgId)) {
+      openLockedPackage(optionalPkgId, 'cat');
+    } else if (typeof window.openPrepModal === 'function') {
+      window.openPrepModal(optionalPkgId);
+    }
+  }
+}
+
+function scrollHomeSection(sectionKey) {
+  if (typeof showScreen === 'function') showScreen('home');
+  if (sectionKey === 'top' && typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  const map = {
+    timeline: 'sectionTimelinePengadaan',
+    faq: 'sectionFaqPanduan',
+    paket: 'homeSubNavStrip'
+  };
+  const id = map[sectionKey];
+  const el = id && typeof document !== 'undefined' ? document.getElementById(id) : null;
+  if (el && typeof el.scrollIntoView === 'function') {
+    try {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (_) { }
+  }
+}
+
+function toggleA11yMenu(forceOpen) {
+  if (typeof document === 'undefined') return;
+  const pop = document.getElementById('a11yPopoverCard');
+  if (!pop) return;
+  if (typeof forceOpen === 'boolean') pop.classList.toggle('hidden', !forceOpen);
+  else pop.classList.toggle('hidden');
+}
+
+function toggleA11yFontScale() {
+  if (typeof document === 'undefined') return;
+  const cur = document.documentElement.getAttribute('data-font-scale');
+  const next = cur === 'large' ? 'normal' : 'large';
+  document.documentElement.setAttribute('data-font-scale', next);
+  const btn = document.getElementById('btnA11yFont');
+  if (btn) btn.textContent = next === 'large' ? 'Teks: Besar' : 'Teks: Normal';
+}
+
+function toggleHighContrast() {
+  if (typeof document === 'undefined') return;
+  const cur = document.documentElement.getAttribute('data-contrast');
+  const next = cur === 'high' ? 'normal' : 'high';
+  document.documentElement.setAttribute('data-contrast', next);
+  const btn = document.getElementById('btnA11yContrast');
+  if (btn) btn.textContent = next === 'high' ? 'Kontras: Tinggi' : 'Kontras: Normal';
+}
+
+function handleWindowScrollState() {
+  if (typeof document === 'undefined' || typeof window === 'undefined') return;
+  const y = window.scrollY || window.pageYOffset || 0;
+  const hdr = document.getElementById('siteHeader');
+  if (hdr) hdr.classList.toggle('is-scrolled', y > 24);
+  const topBtn = document.getElementById('btnBackToTop');
+  if (topBtn) topBtn.classList.toggle('is-hidden', y < 260);
 }
 
 function handleBrandClick() {
@@ -253,6 +367,7 @@ function showScreen(screenName) {
       window.Proctor.stopWebcamStream();
       window.Proctor.exitFullscreenLock();
     }
+    if (window.Auth && typeof window.Auth.syncUI === 'function') window.Auth.syncUI(document);
     if (window.Landing) window.Landing.refresh();
     if (window.History) window.History.render();
   }
@@ -341,6 +456,26 @@ if (typeof window !== 'undefined') {
   window.init = initApp;
   window.showScreen = showScreen;
   window.switchHomeTab = switchHomeTab;
+  window.openPortalTabOrLogin = openPortalTabOrLogin;
+  window.scrollHomeSection = scrollHomeSection;
+  window.toggleA11yMenu = toggleA11yMenu;
+  window.toggleA11yFontScale = toggleA11yFontScale;
+  window.toggleHighContrast = toggleHighContrast;
+  if (typeof window.addEventListener === 'function') {
+    window.addEventListener('scroll', handleWindowScrollState, { passive: true });
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (e) => {
+        const ddWrap = document.getElementById('hdrUserMenuWrap');
+        if (ddWrap && !ddWrap.contains(e.target) && typeof window.closeHeaderUserMenu === 'function') {
+          window.closeHeaderUserMenu();
+        }
+        const a11yWrap = document.getElementById('a11yFloatingWrap');
+        if (a11yWrap && !a11yWrap.contains(e.target)) {
+          toggleA11yMenu(false);
+        }
+      });
+    }
+  }
   window.handleBrandClick = handleBrandClick;
   window.toggleTheme = toggleTheme;
   window.openDonationModal = openDonationModal;

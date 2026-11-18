@@ -167,6 +167,147 @@
   box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+}
+
+.password-input-wrap .form-input,
+.auth-modal-card .password-input-wrap input {
+  width: 100%;
+  padding-right: 42px;
+}
+
+.btn-eye-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.btn-eye-toggle:hover {
+  color: var(--sscasn-blue);
+  background: var(--bg-subtle);
+}
+
+.btn-eye-toggle.is-visible {
+  color: var(--sscasn-blue);
+}
+
+.btn-eye-inline {
+  border: 1px solid var(--border-color);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.btn-eye-inline:hover {
+  color: var(--sscasn-blue);
+  border-color: var(--sscasn-blue);
+}
+
+.foto-upload-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1.5px dashed var(--sscasn-sky-border);
+  border-radius: 10px;
+  background: var(--sscasn-sky-soft);
+}
+
+.foto-preview-thumb {
+  width: 60px;
+  height: 80px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #1672ba 0%, #0f5da0 100%);
+  border: 1.5px solid #bfdbfe;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.foto-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.foto-upload-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.foto-upload-input {
+  width: 100%;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.hdr-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.profile-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.profile-portrait-box.has-photo {
+  padding: 0;
+  overflow: hidden;
+  background: #0f5da0;
+}
+
+.card-avatar-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 /* ==========================================================================
    MODALS BASE
    ========================================================================== */
@@ -437,9 +578,9 @@
    ========================================================================== */
 .floating-robot-wrap {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
+  bottom: 70px;
+  right: 18px;
+  z-index: 880;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -453,12 +594,12 @@
 }
 
 .robot-btn {
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-  border: 3px solid #ffffff;
-  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+  background: linear-gradient(135deg, #1481c6 0%, #0b5d99 100%);
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 8px 20px rgba(20, 129, 198, 0.32);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -469,15 +610,15 @@
 }
 
 .robot-btn:hover {
-  box-shadow: 0 10px 28px rgba(2, 132, 199, 0.5);
+  box-shadow: 0 10px 26px rgba(20, 129, 198, 0.45);
 }
 
 .robot-badge-pulse {
   position: absolute;
   top: -2px;
   right: -2px;
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   background: var(--cat-red);
   border: 2px solid #ffffff;
   border-radius: 50%;
@@ -491,19 +632,29 @@
 }
 
 .robot-speech-bubble {
-  background: #ffffff;
-  color: #0f172a;
-  font-size: 0.8rem;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.78rem;
   font-weight: 700;
   line-height: 1.35;
-  padding: 8px 14px;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  border: 1.5px solid #bfdbfe;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  border: 1.5px solid var(--sscasn-sky-border);
   max-width: 210px;
   position: relative;
   pointer-events: none;
-  animation: bubbleFloat 3s ease-in-out infinite;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.floating-robot-wrap:hover .robot-speech-bubble,
+.floating-robot-wrap:focus-within .robot-speech-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
 }
 
 .robot-speech-bubble::after {

@@ -10,29 +10,34 @@
   --font-code: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Surfaces & Backgrounds */
-  --bg-page: #f8fafc;
+  --bg-page: #f4f7fb;
   --bg-surface: #ffffff;
-  --bg-subtle: #f1f5f9;
-  --bg-accent: #e2e8f0;
+  --bg-subtle: #eff5fb;
+  --bg-accent: #dce8f5;
 
   /* Text Colors */
-  --text-primary: #0f172a;
+  --text-primary: #0f2942;
   --text-secondary: #475569;
   --text-muted: #64748b;
   --text-inverse: #ffffff;
 
   /* Borders & Focus Rings */
-  --border-color: #e2e8f0;
-  --border-focus: #0284c7;
+  --border-color: #dce5f0;
+  --border-focus: #1481c6;
 
-  /* BKN Identity & Primary Palette */
-  --bkn-blue: #0284c7;
-  --bkn-navy: #0f172a;
-  --bkn-navy-mid: #1e293b;
-  --primary: #1d4ed8;
-  --primary-hover: #1e40af;
-  --primary-light: #eff6ff;
-  --primary-border: #bfdbfe;
+  /* BKN / SSCASN Identity & Primary Palette */
+  --sscasn-blue: #1481c6;
+  --sscasn-blue-deep: #0b5d99;
+  --sscasn-blue-mid: #1c7db0;
+  --sscasn-sky-soft: #eaf4fc;
+  --sscasn-sky-border: #c6e0f5;
+  --bkn-blue: #1481c6;
+  --bkn-navy: #0f2942;
+  --bkn-navy-mid: #163b5e;
+  --primary: #1481c6;
+  --primary-hover: #0e6aa8;
+  --primary-light: #eaf4fc;
+  --primary-border: #bae0f7;
 
   /* Official CAT BKN Semantic Status Colors */
   --color-answered: #16a34a;
@@ -76,13 +81,19 @@
   --text-inverse: #0f172a;
 
   --border-color: #1f2937;
-  --border-focus: #60a5fa;
+  --border-focus: #38bdf8;
 
+  --sscasn-blue: #248fd4;
+  --sscasn-blue-deep: #0b4c7c;
+  --sscasn-blue-mid: #166a9e;
+  --sscasn-sky-soft: #11243a;
+  --sscasn-sky-border: #1e4068;
+  --bkn-blue: #38bdf8;
   --bkn-navy: #0b0f19;
   --bkn-navy-mid: #131c2e;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-light: #172554;
+  --primary: #248fd4;
+  --primary-hover: #1479bd;
+  --primary-light: #11243a;
   --primary-border: #1e40af;
 
   --color-answered: #22c55e;
@@ -96,4 +107,18 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+[data-contrast="high"] {
+  --border-color: #94a3b8;
+  --text-secondary: #1e293b;
+}
+
+[data-theme="dark"][data-contrast="high"] {
+  --border-color: #64748b;
+  --text-secondary: #f1f5f9;
+}
+
+html[data-font-scale="large"] {
+  font-size: 17.5px;
 }
