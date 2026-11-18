@@ -23,19 +23,19 @@ console.log('--- 1. Root Deployment Parity ---');
 const headersRoot = path.join(rootDir, '_headers');
 const redirectsRoot = path.join(rootDir, '_redirects');
 const headersDeploy = path.join(rootDir, 'DEPLOY_CLOUDFLARE', '_headers');
-const redirectsDeploy = path.join(rootDir, 'DEPLOY_CLOUDFLARE', '_redirects');
+const wranglerPath = path.join(rootDir, 'wrangler.jsonc');
 
 assert(fs.existsSync(headersRoot), 'Root _headers file exists');
-assert(fs.existsSync(redirectsRoot), 'Root _redirects file exists');
+assert(!fs.existsSync(redirectsRoot), 'Root _redirects absent (Workers uses wrangler.jsonc single-page-application, avoids code 100324)');
 if (fs.existsSync(headersRoot) && fs.existsSync(headersDeploy)) {
   const contentRoot = fs.readFileSync(headersRoot, 'utf8').trim();
   const contentDeploy = fs.readFileSync(headersDeploy, 'utf8').trim();
   assert(contentRoot === contentDeploy, 'Root _headers matches DEPLOY_CLOUDFLARE/_headers');
 }
-if (fs.existsSync(redirectsRoot) && fs.existsSync(redirectsDeploy)) {
-  const contentRoot = fs.readFileSync(redirectsRoot, 'utf8').trim();
-  const contentDeploy = fs.readFileSync(redirectsDeploy, 'utf8').trim();
-  assert(contentRoot === contentDeploy, 'Root _redirects matches DEPLOY_CLOUDFLARE/_redirects');
+assert(fs.existsSync(wranglerPath), 'Root wrangler.jsonc exists');
+if (fs.existsSync(wranglerPath)) {
+  const wCfg = JSON.parse(fs.readFileSync(wranglerPath, 'utf8'));
+  assert(wCfg.assets && wCfg.assets.not_found_handling === 'single-page-application', 'wrangler.jsonc sets assets.not_found_handling = single-page-application');
 }
 
 // 2. Data Extraction: questions.js

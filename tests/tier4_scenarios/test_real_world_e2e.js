@@ -268,19 +268,22 @@ suite.test('Scenario 4: Passing Grade Boundary Matrix (Candidate 1: TWK 64 Fail;
 suite.test('Scenario 5: Mobile Viewport Responsiveness & Deployment Asset Parity', () => {
   const rootDir = path.resolve(__dirname, '../../');
 
-  // 1. Root Deployment Parity: _headers and _redirects
+  // 1. Root Deployment Parity: _headers and Cloudflare Workers SPA config
   const headersPath = path.join(rootDir, '_headers');
   const redirectsPath = path.join(rootDir, '_redirects');
+  const cfWranglerPath = path.join(rootDir, 'wrangler.jsonc');
 
-  assert(fs.existsSync(headersPath), '_headers must exist at root for Cloudflare Pages');
-  assert(fs.existsSync(redirectsPath), '_redirects must exist at root for Cloudflare Pages SPA');
+  assert(fs.existsSync(headersPath), '_headers must exist at root for Cloudflare security headers');
+  assert(!fs.existsSync(redirectsPath), '_redirects must not exist at root on Workers (avoids Wrangler error 100324)');
 
   const headersContent = fs.readFileSync(headersPath, 'utf8');
   assert(headersContent.includes('X-Frame-Options: SAMEORIGIN'), '_headers must include security frame options');
   assert(headersContent.includes('X-Content-Type-Options: nosniff'), '_headers must include nosniff');
 
-  const redirectsContent = fs.readFileSync(redirectsPath, 'utf8');
-  assert(redirectsContent.includes('/index.html'), '_redirects must route to /index.html');
+  assert(fs.existsSync(cfWranglerPath), 'wrangler.jsonc must exist at root for Cloudflare Workers');
+  const cfWranglerCfg = JSON.parse(fs.readFileSync(cfWranglerPath, 'utf8'));
+  assert(cfWranglerCfg.assets && cfWranglerCfg.assets.directory === '.', 'wrangler.jsonc assets.directory must be .');
+  assert(cfWranglerCfg.assets && cfWranglerCfg.assets.not_found_handling === 'single-page-application', 'wrangler.jsonc must enable single-page-application fallback');
 
   // 2. Vercel & Wrangler config parity
   const vercelPath = path.join(rootDir, 'vercel.json');

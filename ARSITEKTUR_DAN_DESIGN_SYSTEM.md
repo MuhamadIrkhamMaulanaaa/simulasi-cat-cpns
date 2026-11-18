@@ -35,7 +35,8 @@ E:\Karir\Portofolio\CPNS\
 ├── KODE_GOOGLE_APPS_SCRIPT_SPREADSHEET.js # Backend opsional pencatatan pendaftaran ke Sheets
 ├── vercel.json                         # Konfigurasi routing SPA Vercel
 ├── wrangler.jsonc                      # Konfigurasi Cloudflare Workers/Pages static assets
-├── _headers & _redirects               # Header keamanan (X-Frame-Options, nosniff) & SPA fallback
+├── _headers                            # Header keamanan (X-Frame-Options, nosniff)
+├── wrangler.jsonc                      # Konfigurasi Cloudflare Workers Static Assets & SPA fallback
 ├── data/
 │   ├── questions.js                    # 610 butir soal tervalidasi (120 TWK, 150 TIU, 180 TKP, 160 SKB, 23 SVG)
 │   └── packages.js                     # 12 definisi paket ujian & fungsi filter deterministik
@@ -262,6 +263,6 @@ Apabila dua atau lebih peserta yang sama-sama lolos ambang batas (`passAll = tru
 ## 6. Jaminan Mutu & Strategi Pengujian
 
 Seluruh lapisan logika dan deployment dijaga oleh 3 lapisan verifikasi otomatis:
-1. **`tests/verify_m1_final.js`**: Validasi 610 soal, 12 paket, integritas 6 berkas CSS, paritas `_headers`/`_redirects`, pembersihan Base64 QRIS, ukuran `index.html < 100 KB`, serta sintaks skrip.
+1. **`tests/verify_m1_final.js`**: Validasi 610 soal, 12 paket, integritas 6 berkas CSS, paritas `_headers` & `wrangler.jsonc` SPA mode (tanpa `_redirects`), pembersihan Base64 QRIS, ukuran `index.html < 100 KB`, serta sintaks skrip.
 2. **`tests/run_all_tests.js`**: 137 pengujian otomatis (protokol TAP v13) mencakup Tier 1 Fitur, Tier 2 Batas Ekstrem, Tier 3 Interaksi Lintas Fitur, dan Tier 4 Skenario E2E.
 3. **`tests/adversarial_boundary_stress.js`**: 23 uji stres batas (*off-by-one* PG `64/65`, `79/80`, `165/166`, `429/430`, tie-breaker BKN, *timer clamping* di `0`, *corrupt JSON immunity*, validasi batas panjang nama/HP/PIN).

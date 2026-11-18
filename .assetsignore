@@ -14,8 +14,7 @@ tests/
 Thumbs.db
 
 # Config & server-side scripts (not public browser assets)
-# _redirects excluded because wrangler.jsonc uses native not_found_handling: "single-page-application"
-_redirects
+.assetsignore
 .gitignore
 package.json
 package-lock.json
